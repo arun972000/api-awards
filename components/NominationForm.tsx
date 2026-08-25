@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   CircleAlert,
   FileText,
-  LoaderCircle,
   LockKeyhole,
   Send,
   Upload,
@@ -18,7 +17,7 @@ import {
 import AwardTerms from '@/components/AwardTerms';
 import { awardDates } from '@/lib/awardContent';
 import { categories, type CategoryId } from '@/lib/categories';
-import { countWords } from '@/lib/validation';
+import { countWords, nominationSchema } from '@/lib/validation';
 
 type FormState = {
   category: CategoryId | '';
@@ -111,7 +110,52 @@ const readableFieldNames: Partial<Record<keyof FormState, string>> = {
   impactOutcomes: 'the impact or outcomes',
   meritRecognition: 'why the nomination merits recognition',
   personCompletingForm: 'the name of the person completing the form',
+  goodFaithAccurate: 'Accurate and complete information',
+  goodFaithResponsibility: 'Responsibility for submitted information',
+  goodFaithAuthority: 'Authority and required permissions',
+  goodFaithClarification: 'API clarification and verification',
+  goodFaithDisqualification: 'Disqualification for misrepresentation',
+  goodFaithIpRights: 'Third-party rights confirmation',
+  indiaEligibilityConfirmed: 'India delivery confirmation',
+  publicityConfirmed: 'Finalist participation and publicity consent',
+  termsAccepted: 'Terms and Conditions acceptance',
 };
+
+const fieldSteps: Partial<Record<keyof FormState, number>> = {
+  category: 1,
+  nomineeKind: 2,
+  nomineeName: 2,
+  entryTitle: 2,
+  contactPerson: 2,
+  contactEmail: 2,
+  contactPhone: 2,
+  ageEligibilityConfirmed: 2,
+  briefDescription: 3,
+  impactOutcomes: 3,
+  meritRecognition: 3,
+  supportingUrl: 3,
+  submitterIsContact: 4,
+  personCompletingForm: 4,
+  goodFaithAccurate: 4,
+  goodFaithResponsibility: 4,
+  goodFaithAuthority: 4,
+  goodFaithClarification: 4,
+  goodFaithDisqualification: 4,
+  goodFaithIpRights: 4,
+  indiaEligibilityConfirmed: 4,
+  publicityConfirmed: 4,
+  termsAccepted: 4,
+};
+
+function normaliseFieldErrors(
+  fieldErrors: Partial<Record<keyof FormState, string[] | string | undefined>>,
+) {
+  return Object.fromEntries(
+    Object.entries(fieldErrors)
+      .map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
+      .filter((entry): entry is [string, string] => Boolean(entry[1])),
+  ) as Partial<Record<keyof FormState, string>>;
+}
 
 function WordCount({ value, max }: { value: string; max: number }) {
   const words = countWords(value);
@@ -145,10 +189,37 @@ export default function NominationForm() {
     () => categories.find((category) => category.id === form.category),
     [form.category],
   );
+  const activeErrors = Object.entries(errors).filter(
+    (entry): entry is [keyof FormState, string] => Boolean(entry[1]),
+  );
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: undefined }));
+    if (status === 'error') {
+      setStatus('idle');
+      setServerMessage('');
+    }
+  }
+
+  function goToField(field: keyof FormState) {
+    setStep(fieldSteps[field] ?? 4);
+    window.setTimeout(() => {
+      const element = document.getElementById(field);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element?.focus({ preventScroll: true });
+    }, 80);
+  }
+
+  function showSubmissionErrors(
+    nextErrors: Partial<Record<keyof FormState, string>>,
+    message = 'Please correct the highlighted information before submitting.',
+  ) {
+    setErrors(nextErrors);
+    setStatus('error');
+    setServerMessage(message);
+    const firstField = Object.keys(nextErrors)[0] as keyof FormState | undefined;
+    if (firstField) goToField(firstField);
   }
 
   function validateStep(currentStep: number) {
@@ -164,8 +235,20 @@ export default function NominationForm() {
       }
     }
     if (currentStep === 2) {
+      if (form.nomineeName.trim().length > 0 && form.nomineeName.trim().length < 2) {
+        nextErrors.nomineeName = 'Enter the nominee name.';
+      }
+      if (form.entryTitle.trim().length > 0 && form.entryTitle.trim().length < 5) {
+        nextErrors.entryTitle = 'Enter a clear initiative, project or contribution title.';
+      }
+      if (form.contactPerson.trim().length > 0 && form.contactPerson.trim().length < 2) {
+        nextErrors.contactPerson = 'Enter the contact person name.';
+      }
       if (form.contactEmail && !/^\S+@\S+\.\S+$/.test(form.contactEmail)) {
         nextErrors.contactEmail = 'Enter a valid email address.';
+      }
+      if (form.contactPhone.length > 30) {
+        nextErrors.contactPhone = 'Keep the phone number to 30 characters or fewer.';
       }
       if (form.category === 'young_professional' && !form.ageEligibilityConfirmed) {
         nextErrors.ageEligibilityConfirmed =
@@ -194,7 +277,7 @@ export default function NominationForm() {
     setErrors(nextErrors);
     const firstError = Object.keys(nextErrors)[0];
     if (firstError) {
-      requestAnimationFrame(() => document.getElementById(firstError)?.focus());
+      goToField(firstError as keyof FormState);
     }
     return Object.keys(nextErrors).length === 0;
   }
@@ -208,6 +291,7 @@ export default function NominationForm() {
   function previousStep() {
     setStep((current) => Math.max(current - 1, 1));
     setErrors({});
+    setStatus('idle');
     setServerMessage('');
   }
 
@@ -238,16 +322,31 @@ export default function NominationForm() {
 
   async function submitNomination(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!validateStep(4)) return;
+    const payload = {
+      ...form,
+      personCompletingForm: form.submitterIsContact
+        ? form.contactPerson
+        : form.personCompletingForm,
+    };
+    const clientValidation = nominationSchema.safeParse(payload);
+    if (!clientValidation.success) {
+      showSubmissionErrors(
+        normaliseFieldErrors(clientValidation.error.flatten().fieldErrors),
+        'A few details still need attention. We have taken you to the first one.',
+      );
+      return;
+    }
+    if (fileError || (supportingFile && form.supportingUrl)) {
+      showSubmissionErrors(
+        { supportingUrl: fileError || 'Choose either one supporting URL or one file, not both.' },
+        'Please review the supporting material before submitting.',
+      );
+      return;
+    }
+
     setStatus('submitting');
     setServerMessage('');
     try {
-      const payload = {
-        ...form,
-        personCompletingForm: form.submitterIsContact
-          ? form.contactPerson
-          : form.personCompletingForm,
-      };
       const requestBody = new FormData();
       requestBody.set('nomination', JSON.stringify(payload));
       if (supportingFile) requestBody.set('supportingFile', supportingFile);
@@ -259,11 +358,11 @@ export default function NominationForm() {
       };
       if (!response.ok) {
         if (result.fields) {
-          setErrors(
-            Object.fromEntries(
-              Object.entries(result.fields).map(([key, messages]) => [key, messages?.[0]]),
-            ),
+          showSubmissionErrors(
+            normaliseFieldErrors(result.fields),
+            'A few details still need attention. We have taken you to the first one.',
           );
+          return;
         }
         throw new Error(result.error ?? 'Unable to submit the nomination.');
       }
@@ -335,6 +434,10 @@ export default function NominationForm() {
         </aside>
 
         <form className='nomination-form' onSubmit={submitNomination} noValidate>
+          <div className='mobile-step-copy'>
+            <span>Step {step} of 4</span>
+            <strong>{steps[step - 1]}</strong>
+          </div>
           <div className='mobile-progress' aria-label={`Step ${step} of 4`}>
             <span style={{ width: `${step * 25}%` }} />
           </div>
@@ -404,6 +507,7 @@ export default function NominationForm() {
                   value={form.nomineeName}
                   onChange={(value) => update('nomineeName', value)}
                   error={errors.nomineeName}
+                  maxLength={180}
                   required
                 />
                 <Field
@@ -412,6 +516,7 @@ export default function NominationForm() {
                   value={form.entryTitle}
                   onChange={(value) => update('entryTitle', value)}
                   error={errors.entryTitle}
+                  maxLength={220}
                   required
                 />
                 <Field
@@ -420,6 +525,8 @@ export default function NominationForm() {
                   value={form.contactPerson}
                   onChange={(value) => update('contactPerson', value)}
                   error={errors.contactPerson}
+                  maxLength={160}
+                  autoComplete='name'
                   required
                 />
                 <Field
@@ -429,6 +536,9 @@ export default function NominationForm() {
                   value={form.contactEmail}
                   onChange={(value) => update('contactEmail', value)}
                   error={errors.contactEmail}
+                  maxLength={200}
+                  autoComplete='email'
+                  inputMode='email'
                   required
                 />
                 <Field
@@ -437,6 +547,9 @@ export default function NominationForm() {
                   type='tel'
                   value={form.contactPhone}
                   onChange={(value) => update('contactPhone', value)}
+                  maxLength={30}
+                  autoComplete='tel'
+                  inputMode='tel'
                 />
               </div>
               {form.category === 'young_professional' && (
@@ -516,6 +629,8 @@ export default function NominationForm() {
                   value={form.supportingUrl}
                   onChange={(value) => update('supportingUrl', value)}
                   error={errors.supportingUrl}
+                  maxLength={500}
+                  inputMode='url'
                 />
                 <div className='file-field'>
                   <label className='file-picker' htmlFor='supportingFile'>
@@ -591,6 +706,8 @@ export default function NominationForm() {
                     value={form.personCompletingForm}
                     onChange={(value) => update('personCompletingForm', value)}
                     error={errors.personCompletingForm}
+                    maxLength={160}
+                    autoComplete='name'
                     required
                   />
                 ) : null}
@@ -691,11 +808,16 @@ export default function NominationForm() {
                   onChange={(event) => update('websiteConfirm', event.target.value)}
                 />
               </div>
-              {status === 'error' ? (
-                <div className='submit-error' role='alert'>{serverMessage}</div>
-              ) : null}
             </fieldset>
           )}
+
+          {status === 'error' ? (
+            <FormErrorSummary
+              message={serverMessage}
+              errors={activeErrors}
+              onSelect={goToField}
+            />
+          ) : null}
 
           <div className='form-actions'>
             {step > 1 ? (
@@ -720,6 +842,38 @@ export default function NominationForm() {
   );
 }
 
+function FormErrorSummary({
+  message,
+  errors,
+  onSelect,
+}: {
+  message: string;
+  errors: [keyof FormState, string][];
+  onSelect: (field: keyof FormState) => void;
+}) {
+  return (
+    <div className='submit-error' role='alert' aria-live='assertive'>
+      <CircleAlert size={21} aria-hidden='true' />
+      <div>
+        <strong>Let&apos;s finish this nomination</strong>
+        <p>{message || 'Please review the highlighted information and try again.'}</p>
+        {errors.length ? (
+          <ul>
+            {errors.map(([field, error]) => (
+              <li key={field}>
+                <button type='button' onClick={() => onSelect(field)}>
+                  <span>{readableFieldNames[field] ?? 'Required information'}</span>
+                  <small>{error}</small>
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 type FieldProps = {
   id: string;
   label: string;
@@ -729,9 +883,24 @@ type FieldProps = {
   placeholder?: string;
   error?: string;
   required?: boolean;
+  maxLength?: number;
+  autoComplete?: string;
+  inputMode?: 'text' | 'email' | 'tel' | 'url';
 };
 
-function Field({ id, label, value, onChange, type = 'text', placeholder, error, required }: FieldProps) {
+function Field({
+  id,
+  label,
+  value,
+  onChange,
+  type = 'text',
+  placeholder,
+  error,
+  required,
+  maxLength,
+  autoComplete,
+  inputMode,
+}: FieldProps) {
   return (
     <div className={`field ${error ? 'has-error' : ''}`}>
       <label htmlFor={id}>
@@ -742,6 +911,9 @@ function Field({ id, label, value, onChange, type = 'text', placeholder, error, 
         type={type}
         value={value}
         placeholder={placeholder}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
+        inputMode={inputMode}
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : undefined}
@@ -799,11 +971,13 @@ function Checkbox({ id, checked, onChange, label, error }: CheckboxProps) {
           type='checkbox'
           checked={checked}
           onChange={(event) => onChange(event.target.checked)}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${id}-error` : undefined}
         />
         <span className='custom-checkbox' aria-hidden='true'><Check size={14} /></span>
         <span>{label}</span>
       </label>
-      {error ? <small className='field-error'>{error}</small> : null}
+      {error ? <small id={`${id}-error`} className='field-error'>{error}</small> : null}
     </div>
   );
 }

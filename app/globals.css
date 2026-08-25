@@ -27,6 +27,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+main,
+section,
+header,
+footer {
+  min-width: 0;
+}
+
 button,
 input,
 select,
@@ -613,6 +620,16 @@ textarea:focus-visible {
   align-items: center;
 }
 
+.preparation-grid > *,
+.preparation-grid li {
+  min-width: 0;
+}
+
+.preparation-grid h2,
+.preparation-grid li {
+  overflow-wrap: anywhere;
+}
+
 .preparation-grid h2 {
   font-size: clamp(36px, 3.7vw, 58px);
 }
@@ -779,11 +796,16 @@ textarea:focus-visible {
   display: none;
 }
 
+.mobile-step-copy {
+  display: none;
+}
+
 .form-step {
   min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
+  scroll-margin-top: 100px;
   animation: reveal 300ms ease both;
 }
 
@@ -829,7 +851,8 @@ textarea:focus-visible {
   grid-template-columns: 38px 1fr 20px;
   gap: 14px;
   align-items: start;
-  padding: 19px 8px;
+  min-height: 76px;
+  padding: 19px 12px;
   border-bottom: 1px solid var(--line);
   cursor: pointer;
   transition: background 150ms ease;
@@ -855,17 +878,20 @@ textarea:focus-visible {
 .option-copy {
   display: grid;
   gap: 6px;
+  min-width: 0;
 }
 
 .option-copy strong {
   font-family: var(--serif);
   font-size: 17px;
+  overflow-wrap: anywhere;
 }
 
 .option-copy small {
   color: #777069;
   font-size: 11px;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .radio-mark {
@@ -1256,11 +1282,24 @@ textarea:focus-visible {
   color: var(--burgundy);
 }
 
+.eligibility-notice p {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.eligibility-notice strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--ink);
+}
+
 .field {
   position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  scroll-margin-top: 120px;
 }
 
 .field > label,
@@ -1472,6 +1511,7 @@ textarea:focus-visible {
 .checkbox-field {
   display: grid;
   gap: 7px;
+  scroll-margin-top: 120px;
 }
 
 .checkbox-field > label {
@@ -1483,6 +1523,7 @@ textarea:focus-visible {
   cursor: pointer;
   font-size: 11px;
   line-height: 1.55;
+  transition: color 150ms ease;
 }
 
 .checkbox-field input {
@@ -1527,20 +1568,49 @@ textarea:focus-visible {
 
 .declaration-checks {
   display: grid;
-  gap: 17px;
+  gap: 10px;
+}
+
+.declaration-checks .checkbox-field {
+  padding: 13px 14px;
+  background: #faf7f3;
+  border: 1px solid #e8dfd6;
+  border-radius: 3px;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.declaration-checks .checkbox-field:focus-within {
+  background: var(--white);
+  border-color: var(--gold);
+}
+
+.declaration-checks .checkbox-field.has-error {
+  background: #fff6f5;
+  border-color: #c77d83;
 }
 
 .terms-disclosure {
   margin-top: 10px;
+  background: var(--white);
   border: 1px solid var(--line);
+  border-radius: 3px;
 }
 
 .terms-disclosure summary {
-  padding: 17px 20px;
+  display: flex;
+  align-items: center;
+  min-height: 58px;
+  padding: 14px 20px;
   color: var(--burgundy);
   cursor: pointer;
   font-size: 11px;
   font-weight: 700;
+  line-height: 1.45;
+  list-style-position: inside;
+}
+
+.terms-disclosure[open] summary {
+  border-bottom: 1px solid var(--line);
 }
 
 .award-terms-copy {
@@ -1568,14 +1638,75 @@ textarea:focus-visible {
   margin-top: 18px;
   padding: 18px;
   background: #f3ebe1;
+  border-left: 3px solid var(--burgundy);
 }
 
 .submit-error {
-  margin-top: 18px;
-  padding: 13px 15px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 13px;
+  margin-top: 28px;
+  padding: 18px 20px;
   color: #84242e;
   background: #f9e7e7;
+  border: 1px solid #ebc8ca;
+  border-left: 4px solid #9c2631;
+  font-size: 12px;
+  line-height: 1.5;
+  scroll-margin-top: 110px;
+}
+
+.submit-error > svg {
+  margin-top: 2px;
+  flex: 0 0 auto;
+}
+
+.submit-error strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #6f1e27;
+  font-family: var(--serif);
+  font-size: 17px;
+}
+
+.submit-error p {
+  margin: 0;
+}
+
+.submit-error ul {
+  display: grid;
+  gap: 7px;
+  margin: 13px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.submit-error button {
+  display: grid;
+  gap: 1px;
+  width: 100%;
+  padding: 9px 11px;
+  color: #74242c;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(156, 38, 49, 0.18);
+  cursor: pointer;
+}
+
+.submit-error button:hover,
+.submit-error button:focus-visible {
+  background: var(--white);
+  border-color: #9c2631;
+  outline: 0;
+}
+
+.submit-error button span {
   font-size: 11px;
+  font-weight: 700;
+}
+
+.submit-error button small {
+  font-size: 10px;
 }
 
 .button-primary,
@@ -1608,6 +1739,20 @@ textarea:focus-visible {
 .button-secondary:disabled {
   cursor: wait;
   opacity: 0.6;
+}
+
+.button-primary:not(:disabled):hover,
+.button-primary:not(:disabled):focus-visible {
+  background: #4f1720;
+  outline: 3px solid rgba(197, 164, 109, 0.42);
+  outline-offset: 2px;
+}
+
+.button-secondary:not(:disabled):hover,
+.button-secondary:not(:disabled):focus-visible {
+  background: #f3ebe1;
+  outline: 3px solid rgba(197, 164, 109, 0.32);
+  outline-offset: 2px;
 }
 
 .form-actions {
@@ -1709,6 +1854,11 @@ footer {
   margin: 6px 0 0;
   color: #8d867e;
   font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.footer-brand > div {
+  min-width: 0;
 }
 
 .footer-contact {
@@ -1728,6 +1878,7 @@ footer {
 .footer-contact a {
   font-family: var(--serif);
   font-size: 15px;
+  overflow-wrap: anywhere;
 }
 
 .footer-bottom {
@@ -1844,7 +1995,7 @@ footer {
     display: block;
     width: 100%;
     height: 3px;
-    margin-bottom: 42px;
+    margin-bottom: 30px;
     background: #e7dfd6;
   }
 
@@ -1853,6 +2004,30 @@ footer {
     height: 100%;
     background: var(--burgundy);
     transition: width 250ms ease;
+  }
+
+  .mobile-step-copy {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 10px;
+  }
+
+  .mobile-step-copy span {
+    color: #827970;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .mobile-step-copy strong {
+    min-width: 0;
+    color: var(--burgundy);
+    font-family: var(--serif);
+    font-size: 15px;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -1892,7 +2067,7 @@ footer {
   }
 
   .hero-copy {
-    padding-top: 70px;
+    padding: 62px 20px 58px;
   }
 
   .hero h1 {
@@ -1901,7 +2076,8 @@ footer {
   }
 
   .hero-intro {
-    font-size: 18px;
+    font-size: 17px;
+    line-height: 1.6;
   }
 
   .hero-actions {
@@ -1924,7 +2100,8 @@ footer {
   .section-heading h2,
   .principles h2,
   .preparation-grid h2 {
-    font-size: 39px;
+    font-size: 36px;
+    overflow-wrap: anywhere;
   }
 
   .statement-copy p {
@@ -1932,13 +2109,13 @@ footer {
   }
 
   .categories-section {
-    padding-block: 85px;
+    padding-block: 68px;
   }
 
   .category-card:nth-child(n) {
     grid-column: 1 / -1;
-    min-height: 300px;
-    padding: 28px;
+    min-height: 260px;
+    padding: 25px;
   }
 
   .category-card h3 {
@@ -1950,21 +2127,30 @@ footer {
   }
 
   .nomination-section {
-    padding: 55px 12px;
+    padding: 34px 8px;
   }
 
   .nomination-form {
-    padding: 30px 22px 32px;
+    padding: 24px 16px 0;
   }
 
   .form-step legend {
-    font-size: 29px;
+    gap: 9px;
+    font-size: 27px;
+    line-height: 1.08;
+  }
+
+  .step-intro {
+    margin: 12px 0 27px;
+    font-size: 12px;
+    overflow-wrap: anywhere;
   }
 
   .category-options label {
     grid-template-columns: 30px 1fr 18px;
-    gap: 8px;
-    padding-inline: 4px;
+    gap: 9px;
+    min-height: 82px;
+    padding: 16px 7px;
   }
 
   .field-grid,
@@ -1992,6 +2178,18 @@ footer {
     gap: 22px;
   }
 
+  .field input,
+  .field-group input,
+  .field-group select {
+    min-height: 50px;
+    font-size: 16px;
+  }
+
+  .field textarea {
+    min-height: 142px;
+    font-size: 16px;
+  }
+
   .segmented-control {
     gap: 3px;
   }
@@ -2007,6 +2205,16 @@ footer {
     grid-template-columns: 1fr;
   }
 
+  .review-banner {
+    align-items: flex-start;
+    margin-bottom: 22px;
+    padding: 15px;
+  }
+
+  .review-banner > div {
+    align-items: flex-start;
+  }
+
   .submission-review > div {
     border-right: 0;
     border-bottom: 1px solid var(--line);
@@ -2018,11 +2226,17 @@ footer {
 
   .declaration-group {
     gap: 18px;
+    padding-block: 22px;
   }
 
   .supporting-material,
   .person-completing {
-    padding: 18px;
+    padding: 16px;
+  }
+
+  .file-picker {
+    width: 100%;
+    min-height: 48px;
   }
 
   .textarea-label {
@@ -2033,9 +2247,84 @@ footer {
 
   .button-primary,
   .button-secondary {
-    min-height: 44px;
-    padding-inline: 14px;
+    min-height: 48px;
+    padding-inline: 16px;
     font-size: 9px;
+  }
+
+  .checkbox-field > label {
+    grid-template-columns: 22px 1fr;
+    gap: 11px;
+    min-height: 44px;
+    font-size: 12px;
+  }
+
+  .custom-checkbox {
+    width: 22px;
+    height: 22px;
+  }
+
+  .declaration-checks .checkbox-field {
+    padding: 13px;
+  }
+
+  .terms-disclosure summary {
+    min-height: 60px;
+    padding: 14px 15px;
+    font-size: 11px;
+  }
+
+  .award-terms-copy {
+    max-height: 52vh;
+    padding: 4px 15px 20px;
+    font-size: 11px;
+  }
+
+  .terms-confirmation {
+    padding: 15px;
+  }
+
+  .submit-error {
+    grid-template-columns: 1fr;
+    margin-top: 24px;
+    padding: 16px;
+  }
+
+  .submit-error > svg {
+    margin: 0;
+  }
+
+  .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 8;
+    gap: 10px;
+    margin: 30px -16px 0;
+    padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+    background: rgba(255, 253, 250, 0.96);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -12px 30px rgba(50, 34, 27, 0.08);
+    backdrop-filter: blur(12px);
+  }
+
+  .form-actions > span {
+    display: none;
+  }
+
+  .form-actions .button-primary {
+    flex: 1;
+    margin-left: auto;
+  }
+
+  .form-actions .button-secondary {
+    width: 50px;
+    padding: 0;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .hero-art {
+    min-height: 350px;
   }
 
   .footer-top,

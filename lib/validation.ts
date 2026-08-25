@@ -24,10 +24,14 @@ export const nominationSchema = z
   .object({
     category: z.enum(categoryIds),
     nomineeKind: z.enum(['individual', 'organisation', 'team']),
-    nomineeName: z.string().trim().min(2).max(180),
-    entryTitle: z.string().trim().min(5).max(220),
-    contactPerson: z.string().trim().min(2).max(160),
-    contactEmail: z.string().trim().email().max(200),
+    nomineeName: z.string().trim().min(2, 'Enter the nominee name.').max(180),
+    entryTitle: z
+      .string()
+      .trim()
+      .min(5, 'Enter a clear initiative, project or contribution title.')
+      .max(220),
+    contactPerson: z.string().trim().min(2, 'Enter the contact person name.').max(160),
+    contactEmail: z.string().trim().email('Enter a valid email address.').max(200),
     contactPhone: optionalPhone,
     briefDescription: requiredWordLimitedText('Brief description', 300, 3_500),
     impactOutcomes: requiredWordLimitedText('Impact and outcomes', 150, 2_000),
