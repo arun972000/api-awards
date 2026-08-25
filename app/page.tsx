@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import NominationForm from "@/components/NominationForm";
 import { categories } from "@/lib/categories";
+import { awardDates } from "@/lib/awardContent";
 
 const principles = [
   {
@@ -57,7 +58,7 @@ export default function Home() {
       <section className="hero" id="top">
         <div className="hero-grain" />
         <div className="hero-copy">
-          <p className="eyebrow light">Nominations · August 2026</p>
+          <p className="eyebrow light">API Excellence Awards · 2026</p>
           <h1>
             Excellence,
             <br />
@@ -97,7 +98,7 @@ export default function Home() {
         </div>
         <div className="hero-meta">
           <span>
-            <CalendarDays size={16} /> August 2026
+            <CalendarDays size={16} /> Ceremony · {awardDates.ceremony}
           </span>
           <span>
             <Users size={16} /> India&apos;s publishing ecosystem
@@ -120,8 +121,8 @@ export default function Home() {
             knowledge.
           </p>
           <p>
-            The API Excellence Awards recognise the institutions, teams, initiatives, and
-            professionals enabling that transformation. Entries are considered for their quality,
+            The API Excellence Awards recognise individuals, organisations, publishers and teams
+            enabling that transformation. Entries are considered for their quality,
             originality, rigour, and demonstrable impact.
           </p>
         </div>
@@ -182,16 +183,16 @@ export default function Home() {
           </div>
           <ul>
             <li>
-              <Check size={17} /> Nominee and nominator contact details
+              <Check size={17} /> Nominee details and one contact person
             </li>
             <li>
-              <Check size={17} /> An optional short statement explaining why the nominee stands out
+              <Check size={17} /> A brief description of up to 300 words
             </li>
             <li>
-              <Check size={17} /> An outcome or example, if one is readily available
+              <Check size={17} /> Impact and recognition statements of up to 150 words each
             </li>
             <li>
-              <Check size={17} /> Optional links to published work or supporting evidence
+              <Check size={17} /> One optional URL or supporting file, up to 4 MB
             </li>
           </ul>
         </div>

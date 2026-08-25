@@ -61,27 +61,18 @@ const statusLabels: Record<string, string> = {
 
 const detailFields = [
   ["Nominee type", "nomineeKind"],
-  ["Nominee role", "nomineeRole"],
-  ["Nominee phone", "nomineePhone"],
-  ["Nominee city", "nomineeCity"],
-  ["Nominee website", "nomineeWebsite"],
-  ["Publication title", "publicationTitle"],
-  ["ISBN / identifier", "isbnOrIdentifier"],
-  ["Work period", "workPeriod"],
-  ["Birth year", "birthYear"],
-  ["Nominator organisation", "nominatorOrganisation"],
-  ["Nominator role", "nominatorRole"],
-  ["Nominator phone", "nominatorPhone"],
-  ["Relationship", "relationshipToNominee"],
+  ["Contact person", "contactPerson"],
+  ["Phone number", "contactPhone"],
+  ["Person completing the form", "personCompletingForm"],
+  ["Submission date", "submissionDate"],
+  ["Under-35 eligibility confirmed", "ageEligibilityConfirmed"],
+  ["India delivery confirmed", "indiaEligibilityConfirmed"],
 ] as const;
 
 const narrativeFields = [
-  ["Impact summary", "impactSummary"],
-  ["Why this nominee should be recognised", "caseForRecognition"],
-  ["Measurable outcomes", "measurableOutcomes"],
-  ["Category evidence", "categoryEvidence"],
-  ["Supporting links", "supportingLinks"],
-  ["Conflict disclosure", "conflictDisclosure"],
+  ["Brief description", "briefDescription"],
+  ["Impact / outcomes", "impactOutcomes"],
+  ["Why it merits recognition", "meritRecognition"],
 ] as const;
 
 function formatDate(value: string) {
@@ -164,6 +155,8 @@ export default function AdminNominations() {
           nomination.nominee_email,
           nomination.nominator_name,
           nomination.entry_title,
+          textValue(nomination.payload?.contactPerson),
+          textValue(nomination.payload?.personCompletingForm),
         ].some((value) => value.toLowerCase().includes(needle));
       return (
         matchesQuery &&
@@ -411,7 +404,7 @@ function FragmentRow({ nomination, expanded, onToggle }: { nomination: Nominatio
   return (
     <>
       <tr className={expanded ? styles.expandedRow : undefined}>
-        <td><strong>{nomination.nominee_name}</strong><span>{nomination.nominee_organisation}</span><small>{nomination.submission_reference}</small></td>
+        <td><strong>{nomination.nominee_name}</strong><span>{textValue(nomination.payload?.nomineeKind) || "Nominee"}</span><small>{nomination.submission_reference}</small></td>
         <td><span className={styles.categoryLabel}>{categoryLabels[nomination.category] ?? nomination.category}</span><small>{nomination.entry_title}</small></td>
         <td><strong>{nomination.nominator_name}</strong><span>{nomination.nominator_email}</span></td>
         <td><span>{formatDate(nomination.created_at)}</span></td>
@@ -431,8 +424,7 @@ function NominationDetails({ nomination }: { nomination: NominationRecord }) {
         <div><span>Nomination type</span><strong>{nomination.nomination_type === "self" ? "Self nomination" : "Nominated by another person"}</strong></div>
       </div>
       <div className={styles.contactGrid}>
-        <div><span>Nominee email</span><a href={`mailto:${nomination.nominee_email}`}>{nomination.nominee_email}</a></div>
-        <div><span>Nominator email</span><a href={`mailto:${nomination.nominator_email}`}>{nomination.nominator_email}</a></div>
+        <div><span>Contact email</span><a href={`mailto:${nomination.nominee_email}`}>{nomination.nominee_email}</a></div>
         {detailFields.map(([label, key]) => {
           const value = textValue(nomination.payload?.[key]);
           return value ? <div key={key}><span>{label}</span><strong>{value}</strong></div> : null;
@@ -444,6 +436,36 @@ function NominationDetails({ nomination }: { nomination: NominationRecord }) {
           return value ? <article key={key}><span>{label}</span><p>{value}</p></article> : null;
         })}
       </div>
+      <SupportingMaterials payload={nomination.payload} />
+    </div>
+  );
+}
+
+function SupportingMaterials({ payload }: { payload: Record<string, unknown> }) {
+  const supportingUrl = textValue(payload.supportingUrl);
+  const material =
+    payload.supportingMaterial && typeof payload.supportingMaterial === "object"
+      ? payload.supportingMaterial as Record<string, unknown>
+      : null;
+  const path = textValue(material?.path);
+  const name = textValue(material?.fileName) || "Supporting material";
+
+  if (!supportingUrl && !path) return null;
+
+  return (
+    <div className={styles.narratives}>
+      <article>
+        <span>Supporting material</span>
+        <p>
+          {supportingUrl ? <a href={supportingUrl} target="_blank" rel="noreferrer">Open supporting URL</a> : null}
+          {supportingUrl && path ? " · " : null}
+          {path ? (
+            <a href={`/api/admin/nominations/supporting-material?path=${encodeURIComponent(path)}&name=${encodeURIComponent(name)}`}>
+              Download {name}
+            </a>
+          ) : null}
+        </p>
+      </article>
     </div>
   );
 }

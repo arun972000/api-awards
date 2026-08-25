@@ -2,49 +2,39 @@
 
 A single-page Next.js nomination experience for the Association of Publishers in India (API) Excellence Awards & Summit, Founders Edition.
 
-## What is included
+## Included
 
-- Premium, responsive public information page based on the supplied concept note
-- Five award categories and a four-step nomination form
-- Category-aware evidence prompts and Under-35 eligibility handling
-- Server-side validation and private Supabase writes
-- SQL migration with RLS enabled and no public table access
-- CSV export script for authorised administrators
+- Premium responsive public information page with the approved API logo
+- Five award categories and a focused four-step nomination form
+- Revised 300/150/150-word nomination sections
+- Required eligibility, good-faith, publicity and terms declarations
+- Optional single URL or private supporting-file upload
+- Server-side validation and server-only Supabase writes
+- Static-credential admin desk at `/admin/nominations`
+- Authenticated supporting-file downloads and CSV export
 
 ## Local setup
 
-1. Install dependencies:
+1. Install dependencies with `npm install`.
+2. Add the required values to a local `.env.local`: Supabase URL, service-role key, site URL, static admin credentials and admin session secret.
+3. Apply the SQL files in `supabase/migrations` in filename order.
+4. Start the app with `npm run dev`.
 
-   ```bash
-   npm install
-   ```
+The public form posts multipart data to `/api/nominations`. Nomination rows and supporting files are written only by the server with the service-role key. The supporting-material bucket is private, limited to 4 MB, and accepts PDF, Word, JPG and PNG files.
 
-2. Create a local `.env.local` file and add the required Supabase URL, publishable key, service-role key, site URL, and static admin credentials. Keep this file local and never commit it.
+## Admin desk
 
-3. Run both SQL files in `supabase/migrations` in filename order. The first creates the private nominations table; the second grants insert-only access through a strict RLS policy.
+Open `/admin/nominations` and sign in with the configured static username and password. Authorised staff can:
 
-4. Start the app:
+- search and review all revised nomination fields;
+- open submitted supporting URLs;
+- download private supporting files;
+- export the register as an Excel-compatible UTF-8 CSV.
 
-   ```bash
-   npm run dev
-   ```
+## Confirm with the client before launch
 
-The form posts to `/api/nominations`. The publishable key can only insert rows that satisfy the migration's strict RLS policy; it cannot read, update, or delete nominations.
+- Nomination submission deadline
+- Finalist announcement date
+- Final production domain
 
-## Export nominations
-
-Add `SUPABASE_SERVICE_ROLE_KEY` to the trusted administrator environment, then run:
-
-```bash
-npm run export:nominations
-```
-
-The script writes an Excel-compatible UTF-8 CSV into `./exports` by default. Set `EXPORT_DIRECTORY` to change the output folder.
-
-## Production checklist
-
-- Replace the typographic API mark with the approved high-resolution brand asset.
-- Confirm nomination dates, final eligibility rules, privacy language, and evaluation criteria with API.
-- Configure the production Supabase project and keep `SUPABASE_SERVICE_ROLE_KEY` server-only.
-- Add rate limiting and transactional confirmation emails before a high-traffic launch.
-- Set the final production domain in `NEXT_PUBLIC_SITE_URL`.
+The ceremony date is set to 25 September 2026 from the revised client Terms and Conditions.
