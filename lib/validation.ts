@@ -2,7 +2,15 @@ import { z } from 'zod';
 import { categoryIds } from '@/lib/categories';
 
 const optionalUrl = z.string().trim().url().max(500).optional().or(z.literal(''));
-const optionalPhone = z.string().trim().max(30).optional().or(z.literal(''));
+const optionalPhone = z
+  .string()
+  .trim()
+  .max(10, 'Enter a 10-digit phone number.')
+  .refine((value) => value === '' || /^\d{10}$/u.test(value), {
+    message: 'Enter a 10-digit phone number using numbers only.',
+  })
+  .optional()
+  .or(z.literal(''));
 
 export function countWords(value: string) {
   const normalized = value.trim();

@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useMemo, useRef, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -184,6 +184,7 @@ export default function NominationForm() {
   const [serverMessage, setServerMessage] = useState('');
   const [reference, setReference] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const successCardRef = useRef<HTMLDivElement>(null);
 
   const selectedCategory = useMemo(
     () => categories.find((category) => category.id === form.category),
@@ -192,6 +193,12 @@ export default function NominationForm() {
   const activeErrors = Object.entries(errors).filter(
     (entry): entry is [keyof FormState, string] => Boolean(entry[1]),
   );
+
+  useEffect(() => {
+    if (status !== 'success') return;
+    successCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    successCardRef.current?.focus({ preventScroll: true });
+  }, [status]);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -247,8 +254,8 @@ export default function NominationForm() {
       if (form.contactEmail && !/^\S+@\S+\.\S+$/.test(form.contactEmail)) {
         nextErrors.contactEmail = 'Enter a valid email address.';
       }
-      if (form.contactPhone.length > 30) {
-        nextErrors.contactPhone = 'Keep the phone number to 30 characters or fewer.';
+      if (form.contactPhone && !/^\d{10}$/u.test(form.contactPhone)) {
+        nextErrors.contactPhone = 'Enter a 10-digit phone number using numbers only.';
       }
       if (form.category === 'young_professional' && !form.ageEligibilityConfirmed) {
         nextErrors.ageEligibilityConfirmed =
@@ -377,13 +384,19 @@ export default function NominationForm() {
   if (status === 'success') {
     return (
       <section className='nomination-section' id='nominate'>
-        <div className='success-card'>
+        <div
+          ref={successCardRef}
+          className='success-card'
+          role='status'
+          aria-live='polite'
+          tabIndex={-1}
+        >
           <div className='success-icon'><CheckCircle2 size={34} /></div>
           <p className='eyebrow'>Nomination received</p>
           <h2>Thank you for putting excellence forward.</h2>
           <p>
-            Your nomination has been recorded. Keep this reference for correspondence. A withdrawal
-            request may be made in writing to API within two calendar days of submission.
+            Your nomination has been safely recorded. Keep this reference for correspondence. A
+            withdrawal request may be made in writing to API within two calendar days of submission.
           </p>
           <div className='reference-box'>
             <span>Submission reference</span>
@@ -546,10 +559,13 @@ export default function NominationForm() {
                   label='Phone number'
                   type='tel'
                   value={form.contactPhone}
-                  onChange={(value) => update('contactPhone', value)}
-                  maxLength={30}
+                  onChange={(value) => update('contactPhone', value.replace(/\D/gu, '').slice(0, 10))}
+                  error={errors.contactPhone}
+                  maxLength={10}
                   autoComplete='tel'
-                  inputMode='tel'
+                  inputMode='numeric'
+                  pattern='[0-9]{10}'
+                  hint='Enter a 10-digit number.'
                 />
               </div>
               {form.category === 'young_professional' && (
@@ -885,7 +901,9 @@ type FieldProps = {
   required?: boolean;
   maxLength?: number;
   autoComplete?: string;
-  inputMode?: 'text' | 'email' | 'tel' | 'url';
+  inputMode?: 'text' | 'email' | 'tel' | 'url' | 'numeric';
+  pattern?: string;
+  hint?: string;
 };
 
 function Field({
@@ -900,6 +918,8 @@ function Field({
   maxLength,
   autoComplete,
   inputMode,
+  pattern,
+  hint,
 }: FieldProps) {
   return (
     <div className={`field ${error ? 'has-error' : ''}`}>
@@ -914,10 +934,14 @@ function Field({
         maxLength={maxLength}
         autoComplete={autoComplete}
         inputMode={inputMode}
+        pattern={pattern}
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${id}-error` : undefined}
+        aria-describedby={
+          [hint ? `${id}-hint` : '', error ? `${id}-error` : ''].filter(Boolean).join(' ') || undefined
+        }
       />
+      {hint ? <small id={`${id}-hint`} className='field-hint'>{hint}</small> : null}
       {error ? <small id={`${id}-error`} className='field-error'>{error}</small> : null}
     </div>
   );
