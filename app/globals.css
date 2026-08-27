@@ -57,6 +57,25 @@ a {
   text-decoration: none;
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 10px;
+  left: 10px;
+  padding: 11px 15px;
+  color: var(--white);
+  background: var(--brand-blue-deep);
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  transform: translateY(-160%);
+  transition: transform 150ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -66,9 +85,94 @@ textarea:focus-visible {
   outline-offset: 3px;
 }
 
-.site-header {
+.nomination-status {
   position: relative;
-  z-index: 10;
+  z-index: 11;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: clamp(18px, 3vw, 42px);
+  align-items: center;
+  min-height: 76px;
+  padding: 12px clamp(24px, 5vw, 80px);
+  color: var(--brand-blue-deep);
+  background: var(--brand-blue-soft);
+  border-bottom: 1px solid rgba(23, 59, 94, 0.16);
+}
+
+.status-message {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.status-message p,
+.status-closing {
+  margin: 0;
+}
+
+.status-message p {
+  max-width: 760px;
+  color: #465766;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.status-label > span {
+  width: 8px;
+  height: 8px;
+  background: #2f7653;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(47, 118, 83, 0.12);
+}
+
+.status-closing {
+  display: grid;
+  gap: 2px;
+  padding-left: clamp(18px, 2.5vw, 34px);
+  border-left: 1px solid rgba(23, 59, 94, 0.18);
+  white-space: nowrap;
+}
+
+.status-closing span {
+  color: var(--brand-grey);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.status-closing strong {
+  font-size: 12px;
+}
+
+.status-button {
+  min-height: 44px;
+  padding-inline: 18px;
+  color: var(--white);
+  background: var(--brand-blue);
+  white-space: nowrap;
+}
+
+.status-button:hover {
+  background: var(--brand-blue-deep);
+}
+
+.site-header {
+  position: sticky;
+  z-index: 12;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -90,58 +194,6 @@ textarea:focus-visible {
   width: auto;
   height: 58px;
   object-fit: contain;
-}
-
-.brand-mark {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  flex: 0 0 auto;
-  color: var(--burgundy);
-  border: 1px solid var(--burgundy);
-  border-radius: 50%;
-}
-
-.brand-mark::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border: 1px solid rgba(23, 59, 94, 0.45);
-  border-radius: inherit;
-}
-
-.brand-mark span {
-  font-family: var(--serif);
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.04em;
-}
-
-.brand-mark.small {
-  width: 50px;
-  height: 50px;
-  color: var(--gold-light);
-  border-color: var(--gold);
-}
-
-.brand-copy {
-  display: grid;
-  gap: 4px;
-}
-
-.brand-copy strong {
-  font-family: var(--serif);
-  font-size: 16px;
-}
-
-.brand-copy small {
-  color: #66727d;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .header-actions {
@@ -640,6 +692,17 @@ textarea:focus-visible {
   font-size: clamp(36px, 3.7vw, 58px);
 }
 
+.preparation-deadline {
+  margin: 20px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.preparation-deadline strong {
+  color: var(--white);
+}
+
 .preparation-grid ul {
   display: grid;
   gap: 17px;
@@ -665,7 +728,7 @@ textarea:focus-visible {
 .nomination-section {
   padding: 120px max(24px, 4vw);
   background: var(--paper-deep);
-  scroll-margin-top: 20px;
+  scroll-margin-top: 104px;
 }
 
 .form-shell {
@@ -697,6 +760,34 @@ textarea:focus-visible {
   color: rgba(255, 255, 255, 0.66);
   font-size: 13px;
   line-height: 1.65;
+}
+
+.form-deadline {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  margin: -18px 0 32px;
+  padding: 14px 0;
+  color: rgba(255, 255, 255, 0.7);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.form-deadline svg {
+  flex: 0 0 auto;
+  color: var(--brand-grey-light);
+}
+
+.form-deadline span {
+  display: grid;
+  gap: 2px;
+}
+
+.form-deadline strong {
+  color: var(--white);
+  font-size: 12px;
 }
 
 .step-list {
@@ -803,6 +894,10 @@ textarea:focus-visible {
 }
 
 .mobile-step-copy {
+  display: none;
+}
+
+.mobile-deadline {
   display: none;
 }
 
@@ -1867,6 +1962,26 @@ footer {
   min-width: 0;
 }
 
+.footer-logo-mark {
+  display: block;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  padding: 5px;
+  background: var(--white);
+  border-radius: 8px;
+}
+
+.footer-logo-source {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: 44px;
+  object-fit: contain;
+  object-position: left center;
+}
+
 .footer-contact {
   display: grid;
   gap: 8px;
@@ -1900,6 +2015,54 @@ footer {
   text-transform: uppercase;
 }
 
+.not-found-page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 32px 20px;
+  background:
+    radial-gradient(circle at 78% 20%, rgba(174, 188, 200, 0.18), transparent 28%),
+    linear-gradient(140deg, #0d273f 0%, #173b5e 58%, #102f4c 100%);
+}
+
+.not-found-card {
+  width: min(100%, 620px);
+  padding: clamp(32px, 7vw, 66px);
+  text-align: center;
+  background: var(--white);
+  border: 1px solid rgba(23, 59, 94, 0.14);
+  box-shadow: 0 30px 90px rgba(5, 24, 40, 0.28);
+}
+
+.not-found-logo {
+  width: min(100%, 270px);
+  height: auto;
+  margin-bottom: 38px;
+}
+
+.not-found-code {
+  margin: 0 0 10px;
+  color: var(--brand-blue);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.not-found-card h1 {
+  margin: 0;
+  font-size: clamp(36px, 7vw, 58px);
+  line-height: 1.05;
+}
+
+.not-found-card > p:not(.not-found-code) {
+  max-width: 440px;
+  margin: 20px auto 28px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
 @media (max-width: 1100px) {
   .hero {
     grid-template-columns: 1fr 0.72fr;
@@ -1928,12 +2091,19 @@ footer {
 }
 
 @media (max-width: 860px) {
+  .nomination-status {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .status-message {
+    grid-column: 1 / -1;
+  }
+
   .site-header {
     min-height: 80px;
   }
 
-  .edition-pill,
-  .brand-copy small {
+  .edition-pill {
     display: none;
   }
 
@@ -2005,6 +2175,27 @@ footer {
     background: #dbe1e6;
   }
 
+  .mobile-deadline {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    margin-bottom: 17px;
+    padding: 11px 13px;
+    color: var(--brand-blue-deep);
+    background: var(--brand-blue-soft);
+    border-left: 3px solid var(--brand-blue);
+    font-size: 10px;
+    line-height: 1.45;
+  }
+
+  .mobile-deadline svg {
+    flex: 0 0 auto;
+  }
+
+  .mobile-deadline strong {
+    font-size: 11px;
+  }
+
   .mobile-progress span {
     display: block;
     height: 100%;
@@ -2038,33 +2229,52 @@ footer {
 }
 
 @media (max-width: 600px) {
+  .nomination-status {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px 16px;
+  }
+
+  .status-message {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .status-message p {
+    font-size: 11px;
+  }
+
+  .status-closing {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 0;
+    border: 0;
+  }
+
+  .status-button {
+    width: 100%;
+  }
+
   .site-header {
     padding-inline: 16px;
   }
 
-  .brand-mark {
-    width: 46px;
-    height: 46px;
-  }
-
   .brand-logo {
     width: auto;
-    height: 43px;
-  }
-
-  .brand-copy strong {
-    display: block;
-    max-width: 130px;
-    font-size: 12px;
-    line-height: 1.15;
+    height: 38px;
   }
 
   .button-small {
-    width: 44px;
+    width: auto;
     min-height: 44px;
-    padding-inline: 0;
-    overflow: hidden;
-    font-size: 0;
+    padding-inline: 12px;
+    font-size: 9px;
+    white-space: nowrap;
   }
 
   .button-small svg {

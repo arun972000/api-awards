@@ -1,5 +1,6 @@
 export const awardDates = {
   eligibilityStarts: "1 January 2025",
+  nominationsClose: "10 September 2026",
   ceremony: "25 September 2026",
 } as const;
 
@@ -11,15 +12,15 @@ export const awardTerms = [
     clauses: [
       "The API Excellence Awards are open to eligible individuals, organisations, publishers and teams associated with the publishing ecosystem in India, subject to the requirements of the relevant award category.",
       "The initiative, project, practice, contribution or professional achievement nominated must have been undertaken, implemented or substantially delivered in India. International or cross-border work may be eligible where the substantive work being recognised was undertaken in India.",
-      "The nominated work must have been undertaken, implemented or substantially delivered from 1 January 2025 up to the published nomination submission deadline in 2026.",
-      "For the Young Publishing Professional of the Year category, the nominee must be under 35 years of age as of the nomination submission deadline.",
+      "The nominated work must have been undertaken, implemented or substantially delivered from 1 January 2025 up to 10 September 2026.",
+      "For the Young Publishing Professional of the Year category, the nominee must be under 35 years of age as of 10 September 2026.",
       "A nominee may be considered for more than one category, provided a separate nomination is submitted for each category.",
     ],
   },
   {
     title: "Submission",
     clauses: [
-      "Nominations must be submitted through the official API nomination form by the published deadline.",
+      "Nominations must be submitted through the official API nomination form by 10 September 2026.",
       "Each nomination should provide sufficient information for the Jury to understand the work, its significance and its impact.",
       "Supporting material is optional. API may request additional information or evidence from finalists where reasonably required.",
       "API may close nominations for any category once a threshold determined by API is reached, in order to ensure an effective and timely evaluation process. Where practicable, reasonable notice will be provided through official channels.",

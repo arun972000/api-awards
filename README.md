@@ -1,10 +1,13 @@
 # API Excellence Awards 2026 — nominations
 
-A single-page Next.js nomination experience for the Association of Publishers in India (API) Excellence Awards & Summit, Founders Edition.
+A single-page Next.js nomination experience for the Association of Publishers in India (API) Excellence Awards, Founders Edition.
 
 ## Included
 
-- Premium responsive public information page with the approved API logo
+- Responsive public information page with the approved API logo
+- Prominent nomination status and 10 September 2026 closing date
+- Branded browser, home-screen and social-sharing images
+- Canonical metadata, manifest, sitemap, robots rules and a custom not-found page
 - Five award categories and a focused four-step nomination form
 - Revised 300/150/150-word nomination sections
 - Required eligibility, good-faith, publicity and terms declarations
@@ -33,7 +36,6 @@ Open `/admin/nominations` and sign in with the configured static username and pa
 
 ## Confirm with the client before launch
 
-- Nomination submission deadline
 - Finalist announcement date
 - Final production domain
 

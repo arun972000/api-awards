@@ -106,6 +106,7 @@ const readableFieldNames: Partial<Record<keyof FormState, string>> = {
   entryTitle: 'the initiative or contribution title',
   contactPerson: 'a contact person',
   contactEmail: 'a contact email',
+  contactPhone: 'a valid 10-digit phone number',
   briefDescription: 'a brief description',
   impactOutcomes: 'the impact or outcomes',
   meritRecognition: 'why the nomination merits recognition',
@@ -259,7 +260,7 @@ export default function NominationForm() {
       }
       if (form.category === 'young_professional' && !form.ageEligibilityConfirmed) {
         nextErrors.ageEligibilityConfirmed =
-          'Confirm the nominee will be under 35 on the submission deadline.';
+          'Confirm the nominee will be under 35 on ' + awardDates.nominationsClose + '.';
       }
     }
     if (currentStep === 3) {
@@ -393,9 +394,9 @@ export default function NominationForm() {
         >
           <div className='success-icon'><CheckCircle2 size={34} /></div>
           <p className='eyebrow'>Nomination received</p>
-          <h2>Thank you for putting excellence forward.</h2>
+          <h2>Thank you for your nomination.</h2>
           <p>
-            Your nomination has been safely recorded. Keep this reference for correspondence. A
+            Your nomination has been recorded. Keep this reference for correspondence. A
             withdrawal request may be made in writing to API within two calendar days of submission.
           </p>
           <div className='reference-box'>
@@ -424,11 +425,15 @@ export default function NominationForm() {
       <div className='form-shell'>
         <aside className='form-sidebar'>
           <p className='eyebrow light'>Official nomination form</p>
-          <h2>Put excellence forward.</h2>
+          <h2>Complete your nomination</h2>
           <p>
-            Four focused steps covering the nominee, their contribution, evidence and the required
-            declarations.
+            Work through four short steps covering the nominee, their contribution, supporting
+            information and the required declarations.
           </p>
+          <div className='form-deadline'>
+            <CalendarDays size={17} />
+            <span>Nominations close<strong>{awardDates.nominationsClose}</strong></span>
+          </div>
           <ol className='step-list'>
             {steps.map((label, index) => {
               const number = index + 1;
@@ -447,6 +452,10 @@ export default function NominationForm() {
         </aside>
 
         <form className='nomination-form' onSubmit={submitNomination} noValidate>
+          <div className='mobile-deadline'>
+            <CalendarDays size={17} />
+            <span>Nominations close <strong>{awardDates.nominationsClose}</strong></span>
+          </div>
           <div className='mobile-step-copy'>
             <span>Step {step} of 4</span>
             <strong>{steps[step - 1]}</strong>
@@ -467,7 +476,7 @@ export default function NominationForm() {
                 <p>
                   <strong>Eligibility period</strong>
                   Work must have been undertaken, implemented or substantially delivered in India
-                  between {awardDates.eligibilityStarts} and the 2026 submission deadline.
+                  between {awardDates.eligibilityStarts} and {awardDates.nominationsClose}.
                 </p>
               </div>
               <div className='category-options'>
@@ -575,7 +584,7 @@ export default function NominationForm() {
                     checked={form.ageEligibilityConfirmed}
                     onChange={(checked) => update('ageEligibilityConfirmed', checked)}
                     error={errors.ageEligibilityConfirmed}
-                    label='I confirm the nominee will be under 35 years of age as of the nomination submission deadline.'
+                    label={'I confirm the nominee will be under 35 years of age as of ' + awardDates.nominationsClose + '.'}
                   />
                 </div>
               )}

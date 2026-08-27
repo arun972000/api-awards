@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Montserrat } from 'next/font/google';
+import { getSiteUrl, siteDescription, siteName } from '@/lib/site';
 import './globals.css';
 
 const montserrat = Montserrat({
@@ -10,24 +11,41 @@ const montserrat = Montserrat({
 
 export const viewport: Viewport = {
   themeColor: '#173b5e',
+  colorScheme: 'light',
 };
 
 export const metadata: Metadata = {
-  title: 'API Excellence Awards 2026 | Nominations',
-  description:
-    'Nominate outstanding work and people shaping the future of Indian publishing for the API Excellence Awards 2026.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  title: 'API Excellence Awards 2026 | Nominate',
+  description: siteDescription,
+  metadataBase: getSiteUrl(),
+  applicationName: siteName,
+  alternates: { canonical: '/' },
+  authors: [{ name: 'Association of Publishers in India' }],
+  creator: 'Association of Publishers in India',
+  publisher: 'Association of Publishers in India',
   openGraph: {
-    title: 'API Excellence Awards 2026',
-    description: 'Celebrating innovation, impact, and craft in Indian publishing.',
+    title: 'Nominations open | API Excellence Awards 2026',
+    description: siteDescription,
+    url: '/',
+    siteName,
+    locale: 'en_IN',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nominations open | API Excellence Awards 2026',
+    description: siteDescription,
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang='en' className={montserrat.variable}>
-      <body>{children}</body>
+      <body>
+        <a className='skip-link' href='#main-content'>Skip to main content</a>
+        {children}
+      </body>
     </html>
   );
 }

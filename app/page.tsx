@@ -3,13 +3,12 @@ import {
   ArrowDown,
   ArrowUpRight,
   Award,
+  BadgeCheck,
   BookOpen,
   CalendarDays,
   Check,
   Scale,
   ShieldCheck,
-  Sparkles,
-  Users,
 } from "lucide-react";
 import NominationForm from "@/components/NominationForm";
 import { categories } from "@/lib/categories";
@@ -18,24 +17,41 @@ import { awardDates } from "@/lib/awardContent";
 const principles = [
   {
     icon: Scale,
-    title: "Independent review",
-    text: "A jury of respected leaders from publishing, academia, and allied sectors.",
+    title: "Independent jury",
+    text: "An independent Jury appointed by API will assess every eligible nomination.",
   },
   {
     icon: ShieldCheck,
-    title: "Credible by design",
-    text: "Transparent evaluation and robust conflict-of-interest safeguards.",
+    title: "Clear safeguards",
+    text: "Jury members will step aside where they have a direct or material conflict.",
   },
   {
-    icon: Sparkles,
-    title: "Impact over acclaim",
-    text: "Evidence, craft, systems, and meaningful progress—not bestseller status.",
+    icon: BadgeCheck,
+    title: "Evidence of impact",
+    text: "Entries are considered for the work itself, its significance and its demonstrated impact.",
   },
 ];
 
 export default function Home() {
   return (
-    <main>
+    <main id="main-content">
+      <aside className="nomination-status" aria-label="Nomination status">
+        <div className="status-message">
+          <span className="status-label"><span aria-hidden="true" />Nominations open</span>
+          <p>
+            Know an organisation, initiative or individual advancing Indian publishing?
+            Put them forward for the API Excellence Awards 2026.
+          </p>
+        </div>
+        <p className="status-closing">
+          <span>Nominations close</span>
+          <strong>{awardDates.nominationsClose}</strong>
+        </p>
+        <a className="button status-button" href="#nominate">
+          Nominate now <ArrowDown size={16} />
+        </a>
+      </aside>
+
       <header className="site-header">
         <a className="brand" href="#top" aria-label="API Excellence Awards home">
           <Image
@@ -48,9 +64,13 @@ export default function Home() {
           />
         </a>
         <div className="header-actions">
-          <span className="edition-pill">Founders Edition · 2026</span>
-          <a className="button button-small" href="#nominate">
-            Begin nomination <ArrowDown size={15} />
+          <span className="edition-pill">Closes {awardDates.nominationsClose}</span>
+          <a
+            className="button button-small"
+            href="#nominate"
+            aria-label="Nominate now for the API Excellence Awards 2026"
+          >
+            Nominate now <ArrowDown size={15} />
           </a>
         </div>
       </header>
@@ -58,19 +78,21 @@ export default function Home() {
       <section className="hero" id="top">
         <div className="hero-grain" />
         <div className="hero-copy">
-          <p className="eyebrow light">API Excellence Awards · 2026</p>
+          <p className="eyebrow light">
+            Nominations open · Closes {awardDates.nominationsClose}
+          </p>
           <h1>
             Excellence,
             <br />
             <em>beyond the bestseller.</em>
           </h1>
           <p className="hero-intro">
-            A new platform recognising the people, practices, and ideas moving Indian publishing
-            forward—through innovation, editorial craft, sustainability, and social impact.
+            Know an organisation, initiative or individual advancing Indian publishing? Put them
+            forward for the API Excellence Awards 2026.
           </p>
           <div className="hero-actions">
             <a className="button button-light" href="#nominate">
-              Submit a nomination <ArrowUpRight size={17} />
+              Nominate now <ArrowUpRight size={17} />
             </a>
             <a className="text-link light-link" href="#categories">
               Explore the five awards <ArrowDown size={15} />
@@ -98,10 +120,10 @@ export default function Home() {
         </div>
         <div className="hero-meta">
           <span>
-            <CalendarDays size={16} /> Ceremony · {awardDates.ceremony}
+            <CalendarDays size={16} /> Nominations close · {awardDates.nominationsClose}
           </span>
           <span>
-            <Users size={16} /> India&apos;s publishing ecosystem
+            <CalendarDays size={16} /> Awards ceremony · {awardDates.ceremony}
           </span>
           <span>
             <Award size={16} /> Five founding categories
@@ -133,11 +155,12 @@ export default function Home() {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Founders Edition · Year One</p>
-              <h2>Five signals of a stronger publishing future</h2>
+              <h2>Choose the right award category</h2>
             </div>
             <p>
               Choose the category that most closely reflects the nominee&apos;s primary contribution.
-              One clear, evidence-led entry is stronger than a broad one.
+              If the same nominee is entered in more than one category, submit a separate form for
+              each category.
             </p>
           </div>
           <div className="category-grid">
@@ -157,8 +180,8 @@ export default function Home() {
 
       <section className="principles section-shell">
         <div className="principles-heading">
-          <p className="eyebrow">Governance &amp; credibility</p>
-          <h2>Recognition you can trust.</h2>
+          <p className="eyebrow">How nominations are assessed</p>
+          <h2>A clear and fair process.</h2>
         </div>
         <div className="principle-list">
           {principles.map(({ icon: Icon, title, text }) => (
@@ -179,7 +202,10 @@ export default function Home() {
         <div className="section-shell preparation-grid">
           <div>
             <p className="eyebrow light">Before you begin</p>
-            <h2>A thoughtful nomination can still be simple.</h2>
+            <h2>What you&apos;ll need to nominate</h2>
+            <p className="preparation-deadline">
+              Nominations close on <strong>{awardDates.nominationsClose}</strong>.
+            </p>
           </div>
           <ul>
             <li>
@@ -203,8 +229,14 @@ export default function Home() {
       <footer>
         <div className="footer-top">
           <div className="footer-brand">
-            <span className="brand-mark small" aria-hidden="true">
-              <span>API</span>
+            <span className="footer-logo-mark" aria-hidden="true">
+              <Image
+                className="footer-logo-source"
+                src="/api-publishers-logo-navbar.png"
+                alt=""
+                width={2074}
+                height={523}
+              />
             </span>
             <div>
               <strong>Association of Publishers in India</strong>
@@ -220,7 +252,7 @@ export default function Home() {
         </div>
         <div className="footer-bottom">
           <span>© 2026 Association of Publishers in India</span>
-          <span>API Excellence Awards &amp; Summit · Founders Edition</span>
+          <span>API Excellence Awards · Founders Edition</span>
         </div>
       </footer>
     </main>

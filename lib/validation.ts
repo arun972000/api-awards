@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { awardDates } from '@/lib/awardContent';
 import { categoryIds } from '@/lib/categories';
 
 const optionalUrl = z.string().trim().url().max(500).optional().or(z.literal(''));
@@ -64,7 +65,7 @@ export const nominationSchema = z
       context.addIssue({
         code: 'custom',
         path: ['ageEligibilityConfirmed'],
-        message: 'Confirm the nominee will be under 35 on the submission deadline.',
+        message: 'Confirm the nominee will be under 35 on ' + awardDates.nominationsClose + '.',
       });
     }
 
