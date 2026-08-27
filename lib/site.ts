@@ -1,4 +1,5 @@
-const fallbackSiteUrl = 'http://localhost:3000';
+const productionSiteUrl = 'https://api-excellence-awards.vercel.app';
+const developmentSiteUrl = 'http://localhost:3000';
 
 export const siteName = 'API Excellence Awards 2026';
 export const siteDescription =
@@ -6,6 +7,11 @@ export const siteDescription =
 
 export function getSiteUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  // A production build must never fall back to localhost: this value also
+  // becomes the canonical metadata base, the sitemap host and the request
+  // Origin that FormSubmit requires.
+  const fallbackSiteUrl =
+    process.env.NODE_ENV === 'production' ? productionSiteUrl : developmentSiteUrl;
 
   try {
     return new URL(configuredUrl || fallbackSiteUrl);

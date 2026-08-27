@@ -2,6 +2,8 @@
 
 A single-page Next.js nomination experience for the Association of Publishers in India (API) Excellence Awards, Founders Edition.
 
+Live at <https://api-excellence-awards.vercel.app>.
+
 ## Included
 
 - Responsive public information page with the approved API logo
@@ -13,7 +15,7 @@ A single-page Next.js nomination experience for the Association of Publishers in
 - Required eligibility, good-faith, publicity and terms declarations
 - Optional single URL or private supporting-file upload
 - Server-side validation and server-only Supabase writes
-- Nominee confirmation email through Mailjet after a successful database submission
+- Nominee confirmation email through FormSubmit after a successful database submission
 - Static-credential admin desk at `/admin/nominations`
 - Authenticated supporting-file downloads and CSV export
 
@@ -37,24 +39,49 @@ Open `/admin/nominations` and sign in with the configured static username and pa
 
 ## Confirmation email setup
 
-Nominee confirmations are sent through Mailjet from
-`apiexcellenceawars2026@gmail.com`. Add these server-only environment variables locally and in
-Vercel:
+Nomination confirmations are sent through [FormSubmit](https://formsubmit.co) using the awards
+mailbox `apiexcellenceawards2026@gmail.com`. FormSubmit needs no API key, so the only server-only
+environment variable is optional:
 
-- `MAILJET_API_KEY`
-- `MAILJET_SECRET_KEY`
-- `MAILJET_FROM_EMAIL` (optional; defaults to the address above)
+- `FORMSUBMIT_TARGET` (optional; defaults to `apiexcellenceawards2026@gmail.com`). Set it to the
+  random alias FormSubmit issues after activation to keep the address out of the request URL.
 
-In Mailjet, go to **My Account → Add a Sender Domain or Address**, add the Gmail address, and ask
-the mailbox owner to open Mailjet's confirmation email and approve the sender using its link. The
-address must show as **Active** before production messages can be delivered.
+The app also sends the site URL as the request `Origin`. FormSubmit rejects submissions that
+arrive without one. `NEXT_PUBLIC_SITE_URL` supplies it; when that variable is missing, a production
+build falls back to <https://api-excellence-awards.vercel.app> and a development build to
+`http://localhost:3000`. Both origins are accepted by FormSubmit.
 
-If Mailjet is unavailable, the nomination remains saved in Supabase and the success screen tells
+### Activating the mailbox
+
+FormSubmit will not deliver anything until the mailbox is activated once:
+
+1. The first submission makes FormSubmit email an **Activate Form** link to
+   `apiexcellenceawards2026@gmail.com`.
+2. The mailbox owner opens that email and clicks the link.
+3. FormSubmit then shows a random alias string. Store it in `FORMSUBMIT_TARGET` if you prefer not
+   to expose the address.
+
+Until the link is clicked, every submission is rejected with the `not_activated` reason and logged
+by `/api/nominations`.
+
+### How each email is delivered
+
+FormSubmit always delivers to the activated mailbox and renders its own table template, so the
+nomination lands in the awards inbox and the person who submitted it receives a copy through `_cc`.
+FormSubmit does not accept a custom HTML body, so the previously branded confirmation layout is not
+available; the message is FormSubmit's template built from the submitted fields. FormSubmit's
+`_autoresponse` feature is deliberately unused because it does not work for AJAX submissions or
+when reCAPTCHA is disabled, both of which apply to server-side calls.
+
+After adding or changing Vercel environment variables, create a new production deployment; existing
+deployments do not receive updated environment values.
+
+If FormSubmit is unavailable, the nomination remains saved in Supabase and the success screen tells
 the submitter to retain their submission reference.
 
 ## Confirm with the client before launch
 
 - Finalist announcement date
-- Final production domain
+- Whether the awards move to a custom domain from `api-excellence-awards.vercel.app`
 
 The ceremony date is set to 25 September 2026 from the revised client Terms and Conditions.

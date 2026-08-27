@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   CircleAlert,
   FileText,
+  Inbox,
   LockKeyhole,
   Send,
   Upload,
@@ -399,11 +400,23 @@ export default function NominationForm() {
           <p className='eyebrow'>Nomination received</p>
           <h2>Thank you for your nomination.</h2>
           {confirmationEmailSent ? (
-            <p>
-              Your nomination has been recorded and a confirmation email has been sent to{' '}
-              <strong>{form.contactEmail}</strong>. Keep this reference for correspondence. A
-              withdrawal request may be made in writing to API within two calendar days of submission.
-            </p>
+            <>
+              <p>
+                Your nomination has been recorded and a confirmation email has been sent to{' '}
+                <strong>{form.contactEmail}</strong>. Keep this reference for correspondence. A
+                withdrawal request may be made in writing to API within two calendar days of
+                submission.
+              </p>
+              <div className='spam-note'>
+                <Inbox size={18} />
+                <span>
+                  Our confirmation sometimes arrives in the spam or junk folder. If it is not in
+                  your inbox within a few minutes, please do look there and mark it as{' '}
+                  <strong>Not spam</strong> — that way our future updates will reach you safely.
+                  Thank you.
+                </span>
+              </div>
+            </>
           ) : (
             <p>
               Your nomination has been recorded, but we could not send the confirmation email.

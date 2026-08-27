@@ -1907,6 +1907,29 @@ textarea:focus-visible {
   line-height: 1.7;
 }
 
+.spam-note {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: min(100%, 570px);
+  margin: 0 auto;
+  padding: 16px 20px;
+  text-align: left;
+  color: var(--ink-soft);
+  background: var(--brand-blue-soft);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.spam-note svg {
+  flex: 0 0 auto;
+  color: var(--burgundy);
+}
+
+.spam-note strong {
+  color: var(--burgundy);
+}
+
 .reference-box {
   display: grid;
   gap: 8px;

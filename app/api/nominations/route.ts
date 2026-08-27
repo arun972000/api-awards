@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { categories } from '@/lib/categories';
-import { sendNominationConfirmation } from '@/lib/mailjet';
+import { sendNominationConfirmation } from '@/lib/formsubmit';
 import { nominationSchema } from '@/lib/validation';
 import { getSupabaseAdmin } from '@/lib/supabase';
 
@@ -162,11 +162,11 @@ export async function POST(request: Request) {
     });
 
     if (!confirmationEmail.sent) {
-      console.error(
-        'Nomination confirmation email was not sent',
+      console.error('Nomination confirmation email was not sent', {
         reference,
-        confirmationEmail.reason,
-      );
+        reason: confirmationEmail.reason,
+        ...confirmationEmail.diagnostic,
+      });
     }
 
     return NextResponse.json(
