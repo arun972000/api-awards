@@ -13,6 +13,7 @@ A single-page Next.js nomination experience for the Association of Publishers in
 - Required eligibility, good-faith, publicity and terms declarations
 - Optional single URL or private supporting-file upload
 - Server-side validation and server-only Supabase writes
+- Nominee confirmation email through Mailjet after a successful database submission
 - Static-credential admin desk at `/admin/nominations`
 - Authenticated supporting-file downloads and CSV export
 
@@ -33,6 +34,23 @@ Open `/admin/nominations` and sign in with the configured static username and pa
 - open submitted supporting URLs;
 - download private supporting files;
 - export the register as an Excel-compatible UTF-8 CSV.
+
+## Confirmation email setup
+
+Nominee confirmations are sent through Mailjet from
+`apiexcellenceawars2026@gmail.com`. Add these server-only environment variables locally and in
+Vercel:
+
+- `MAILJET_API_KEY`
+- `MAILJET_SECRET_KEY`
+- `MAILJET_FROM_EMAIL` (optional; defaults to the address above)
+
+In Mailjet, go to **My Account → Add a Sender Domain or Address**, add the Gmail address, and ask
+the mailbox owner to open Mailjet's confirmation email and approve the sender using its link. The
+address must show as **Active** before production messages can be delivered.
+
+If Mailjet is unavailable, the nomination remains saved in Supabase and the success screen tells
+the submitter to retain their submission reference.
 
 ## Confirm with the client before launch
 

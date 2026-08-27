@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { categories } from '@/lib/categories';
+import { sendNominationConfirmation } from '@/lib/mailjet';
 import { nominationSchema } from '@/lib/validation';
 import { getSupabaseAdmin } from '@/lib/supabase';
 
@@ -146,7 +148,31 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ ok: true, reference }, { status: 201 });
+    const categoryName =
+      categories.find((category) => category.id === submission.category)?.name ??
+      submission.category;
+    const confirmationEmail = await sendNominationConfirmation({
+      recipientEmail: submission.contactEmail,
+      recipientName: submission.contactPerson,
+      nomineeName: submission.nomineeName,
+      categoryName,
+      entryTitle: submission.entryTitle,
+      reference,
+      submissionDate: payload.submissionDate,
+    });
+
+    if (!confirmationEmail.sent) {
+      console.error(
+        'Nomination confirmation email was not sent',
+        reference,
+        confirmationEmail.reason,
+      );
+    }
+
+    return NextResponse.json(
+      { ok: true, reference, confirmationEmailSent: confirmationEmail.sent },
+      { status: 201 },
+    );
   } catch (error) {
     if (uploadedPath) {
       try {

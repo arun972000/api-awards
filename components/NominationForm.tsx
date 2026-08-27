@@ -184,6 +184,7 @@ export default function NominationForm() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [serverMessage, setServerMessage] = useState('');
   const [reference, setReference] = useState('');
+  const [confirmationEmailSent, setConfirmationEmailSent] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const successCardRef = useRef<HTMLDivElement>(null);
 
@@ -362,6 +363,7 @@ export default function NominationForm() {
       const result = (await response.json()) as {
         error?: string;
         reference?: string;
+        confirmationEmailSent?: boolean;
         fields?: Partial<Record<keyof FormState, string[]>>;
       };
       if (!response.ok) {
@@ -375,6 +377,7 @@ export default function NominationForm() {
         throw new Error(result.error ?? 'Unable to submit the nomination.');
       }
       setReference(result.reference ?? 'API26-RECEIVED');
+      setConfirmationEmailSent(result.confirmationEmailSent === true);
       setStatus('success');
     } catch (error) {
       setStatus('error');
@@ -395,10 +398,19 @@ export default function NominationForm() {
           <div className='success-icon'><CheckCircle2 size={34} /></div>
           <p className='eyebrow'>Nomination received</p>
           <h2>Thank you for your nomination.</h2>
-          <p>
-            Your nomination has been recorded. Keep this reference for correspondence. A
-            withdrawal request may be made in writing to API within two calendar days of submission.
-          </p>
+          {confirmationEmailSent ? (
+            <p>
+              Your nomination has been recorded and a confirmation email has been sent to{' '}
+              <strong>{form.contactEmail}</strong>. Keep this reference for correspondence. A
+              withdrawal request may be made in writing to API within two calendar days of submission.
+            </p>
+          ) : (
+            <p>
+              Your nomination has been recorded, but we could not send the confirmation email.
+              Please keep this reference for correspondence. A withdrawal request may be made in
+              writing to API within two calendar days of submission.
+            </p>
+          )}
           <div className='reference-box'>
             <span>Submission reference</span>
             <strong>{reference}</strong>
@@ -409,6 +421,7 @@ export default function NominationForm() {
             onClick={() => {
               setForm(initialForm);
               setSupportingFile(null);
+              setConfirmationEmailSent(false);
               setStep(1);
               setStatus('idle');
             }}
@@ -553,7 +566,7 @@ export default function NominationForm() {
                 />
                 <Field
                   id='contactEmail'
-                  label='Email address'
+                  label='Contact email address'
                   type='email'
                   value={form.contactEmail}
                   onChange={(value) => update('contactEmail', value)}
@@ -561,6 +574,7 @@ export default function NominationForm() {
                   maxLength={200}
                   autoComplete='email'
                   inputMode='email'
+                  hint='We will send the nomination receipt and submission reference to this address.'
                   required
                 />
                 <Field
