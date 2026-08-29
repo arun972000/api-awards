@@ -1513,6 +1513,13 @@ textarea:focus-visible {
   border-color: var(--burgundy);
 }
 
+/* The real input is 1px and transparent, so the global focus ring lands on
+   nothing. Move it to the label the user actually sees. */
+.file-field:has(> input:focus-visible) .file-picker {
+  outline: 3px solid rgba(23, 59, 94, 0.3);
+  outline-offset: 3px;
+}
+
 .selected-file {
   display: flex;
   gap: 11px;

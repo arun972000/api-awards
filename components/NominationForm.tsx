@@ -123,6 +123,33 @@ const readableFieldNames: Partial<Record<keyof FormState, string>> = {
   termsAccepted: 'Terms and Conditions acceptance',
 };
 
+// Headings for the error summary. readableFieldNames carries articles for the
+// "Please provide ..." sentence, which reads wrong as a heading.
+const fieldLabels: Partial<Record<keyof FormState, string>> = {
+  category: 'Award category',
+  nomineeKind: 'Nominee type',
+  nomineeName: 'Nominee name',
+  entryTitle: 'Initiative or contribution title',
+  contactPerson: 'Contact person',
+  contactEmail: 'Contact email',
+  contactPhone: 'Contact phone',
+  briefDescription: 'Brief description',
+  impactOutcomes: 'Impact and outcomes',
+  meritRecognition: 'Why it merits recognition',
+  supportingUrl: 'Supporting material',
+  ageEligibilityConfirmed: 'Under-35 eligibility',
+  personCompletingForm: 'Person completing the form',
+  goodFaithAccurate: 'Accurate and complete information',
+  goodFaithResponsibility: 'Responsibility for submitted information',
+  goodFaithAuthority: 'Authority and required permissions',
+  goodFaithClarification: 'API clarification and verification',
+  goodFaithDisqualification: 'Disqualification for misrepresentation',
+  goodFaithIpRights: 'Third-party rights confirmation',
+  indiaEligibilityConfirmed: 'India delivery confirmation',
+  publicityConfirmed: 'Finalist participation and publicity consent',
+  termsAccepted: 'Terms and Conditions acceptance',
+};
+
 const fieldSteps: Partial<Record<keyof FormState, number>> = {
   category: 1,
   nomineeKind: 2,
@@ -148,6 +175,16 @@ const fieldSteps: Partial<Record<keyof FormState, number>> = {
   publicityConfirmed: 4,
   termsAccepted: 4,
 };
+
+function normalisePhone(value: string) {
+  let digits = value.replace(/\D/gu, '');
+  // Indian mobile numbers are ten digits, so anything longer carries a country
+  // code or trunk prefix that a paste brought along.
+  while (digits.length > 10 && (digits.startsWith('0') || digits.startsWith('91'))) {
+    digits = digits.startsWith('0') ? digits.slice(1) : digits.slice(2);
+  }
+  return digits.slice(0, 10);
+}
 
 function normaliseFieldErrors(
   fieldErrors: Partial<Record<keyof FormState, string[] | string | undefined>>,
@@ -241,7 +278,10 @@ export default function NominationForm() {
     for (const field of requiredFields) {
       const value = form[field];
       if (value === '' || value === false) {
-        nextErrors[field] = `Please provide ${readableFieldNames[field] ?? 'this confirmation'}.`;
+        nextErrors[field] =
+          typeof value === 'boolean'
+            ? 'Please tick this box to continue.'
+            : `Please provide ${readableFieldNames[field] ?? 'this information'}.`;
       }
     }
     if (currentStep === 2) {
@@ -410,10 +450,8 @@ export default function NominationForm() {
               <div className='spam-note'>
                 <Inbox size={18} />
                 <span>
-                  Our confirmation sometimes arrives in the spam or junk folder. If it is not in
-                  your inbox within a few minutes, please do look there and mark it as{' '}
-                  <strong>Not spam</strong> — that way our future updates will reach you safely.
-                  Thank you.
+                  Your confirmation should reach your inbox within a few minutes. If you cannot
+                  find it there, please check your spam or junk folder.
                 </span>
               </div>
             </>
@@ -595,7 +633,7 @@ export default function NominationForm() {
                   label='Phone number'
                   type='tel'
                   value={form.contactPhone}
-                  onChange={(value) => update('contactPhone', value.replace(/\D/gu, '').slice(0, 10))}
+                  onChange={(value) => update('contactPhone', normalisePhone(value))}
                   error={errors.contactPhone}
                   maxLength={10}
                   autoComplete='tel'
@@ -695,6 +733,8 @@ export default function NominationForm() {
                     type='file'
                     accept='.pdf,.doc,.docx,.jpg,.jpeg,.png'
                     onChange={(event) => chooseSupportingFile(event.target.files?.[0])}
+                    aria-invalid={Boolean(fileError)}
+                    aria-describedby={fileError ? 'supportingFile-error' : undefined}
                   />
                   {supportingFile ? (
                     <div className='selected-file'>
@@ -708,7 +748,11 @@ export default function NominationForm() {
                       </button>
                     </div>
                   ) : null}
-                  {fileError ? <small className='field-error'>{fileError}</small> : null}
+                  {fileError ? (
+                    <small id='supportingFile-error' className='field-error' role='alert'>
+                      {fileError}
+                    </small>
+                  ) : null}
                 </div>
               </div>
             </fieldset>
@@ -914,7 +958,7 @@ function FormErrorSummary({
             {errors.map(([field, error]) => (
               <li key={field}>
                 <button type='button' onClick={() => onSelect(field)}>
-                  <span>{readableFieldNames[field] ?? 'Required information'}</span>
+                  <span>{fieldLabels[field] ?? 'Still to complete'}</span>
                   <small>{error}</small>
                 </button>
               </li>
