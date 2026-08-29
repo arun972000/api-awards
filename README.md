@@ -16,13 +16,18 @@ Live at <https://api-excellence-awards.vercel.app>.
 - Optional single URL or private supporting-file upload
 - Server-side validation and server-only Supabase writes
 - Branded nominee confirmation email through Gmail SMTP after a successful database submission
+- Awards-staff alert on every nomination, carrying the running nomination number
+- Daily 11am register emailed to staff as a formatted Excel workbook
+- Daily pipeline health check that writes and rolls back, storing and emailing nothing
 - Static-credential admin desk at `/admin/nominations`
 - Authenticated supporting-file downloads and CSV export
 
 ## Local setup
 
 1. Install dependencies with `npm install`.
-2. Add the required values to a local `.env.local`: Supabase URL, service-role key, site URL, static admin credentials and admin session secret.
+2. Add the required values to a local `.env.local`: Supabase URL, service-role key, site URL,
+   static admin credentials, admin session secret, the Gmail app password, the admin
+   notification list and a cron secret. `.env.example` lists every name.
 3. Apply the SQL files in `supabase/migrations` in filename order.
 4. Start the app with `npm run dev`.
 
@@ -82,6 +87,62 @@ deployments do not receive updated environment values.
 
 If Gmail is unavailable, the nomination remains saved in Supabase and the success screen tells the
 submitter to retain their submission reference and check their spam folder.
+
+## Admin notifications and the daily register
+
+`ADMIN_NOTIFICATION_EMAILS` is a comma-separated, server-only list of the awards staff. They receive:
+
+- **Every new nomination.** Once a nomination is saved, staff get a summary carrying the running
+  nomination number, the submission reference and the nominee's details. The submitter's own
+  confirmation is sent at the same time; either message can fail without affecting the other, and
+  neither failure affects the saved nomination.
+- **The 11am register.** A spreadsheet of the whole register, attached as `.xlsx`. It carries a
+  Summary sheet (total, received in the last 24 hours, counts by category and by status) and a
+  Nominations sheet with every field, a frozen bold header and column filters.
+- **Health check failures**, and nothing else from the check. See below.
+
+## Scheduled jobs
+
+`vercel.json` registers two Vercel Cron jobs. Vercel schedules in UTC, so each time is IST minus
+5 hours 30 minutes:
+
+| Job | Route | IST | UTC cron |
+| --- | --- | --- | --- |
+| Health check | `/api/cron/health-check` | 10:30 | `0 5 * * *` |
+| Daily register | `/api/cron/daily-report` | 11:00 | `30 5 * * *` |
+
+Both routes demand `Authorization: Bearer $CRON_SECRET`, compared in constant time. Vercel sends
+that header automatically once `CRON_SECRET` exists in the project environment; while the variable
+is missing the routes reject every request, including Vercel's own. Trigger either by hand with:
+
+```
+curl -H "Authorization: Bearer $CRON_SECRET"   https://api-excellence-awards.vercel.app/api/cron/daily-report
+```
+
+The Hobby plan allows exactly two cron jobs at one run per day, which is precisely what this uses,
+and it may run them up to an hour late. If 11am has to be exact, or a third job is ever needed, move
+the triggers to an external scheduler and keep the routes as they are.
+
+## Daily health check
+
+The check proves the nomination pipeline still works without putting anything in the register or in
+the staff inboxes. It runs three stages:
+
+1. **Validation** — a complete sample submission is parsed by the same `nominationSchema` the public
+   form uses, so a regression in the rules is caught before a real nominee meets it.
+2. **Database write** — `health_check_nomination_write()` performs a genuine `INSERT` into
+   `award_nominations`, exercising every column, check constraint and default, then raises a private
+   error code that unwinds the surrounding plpgsql subtransaction. Postgres rolls the row back, so
+   the probe is never committed.
+3. **Isolation** — the register is searched for any surviving probe row. Finding one fails the check
+   loudly, because it would mean the rollback had stopped working.
+
+A passing check is deliberately silent. Only a failure emails `ADMIN_NOTIFICATION_EMAILS`, and the
+probe data itself is never emailed to anyone.
+
+Apply `supabase/migrations/20260829060000_nomination_health_check.sql` before the first run. Until
+it exists the check fails at the database stage and alerts, which is the correct behaviour but not
+a useful signal.
 
 ## Confirm with the client before launch
 

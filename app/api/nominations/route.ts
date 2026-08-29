@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { categories } from '@/lib/categories';
-import { sendNominationConfirmation } from '@/lib/email';
+import { sendAdminNominationAlert, sendNominationConfirmation } from '@/lib/email';
 import { nominationSchema } from '@/lib/validation';
 import { getSupabaseAdmin } from '@/lib/supabase';
 
@@ -151,7 +151,7 @@ export async function POST(request: Request) {
     const categoryName =
       categories.find((category) => category.id === submission.category)?.name ??
       submission.category;
-    const confirmationEmail = await sendNominationConfirmation({
+    const emailInput = {
       recipientEmail: submission.contactEmail,
       recipientName: submission.contactPerson,
       nomineeName: submission.nomineeName,
@@ -159,13 +159,31 @@ export async function POST(request: Request) {
       entryTitle: submission.entryTitle,
       reference,
       submissionDate: payload.submissionDate,
-    });
+    };
+
+    // The running total gives the awards team a nomination number to quote.
+    const { count } = await client
+      .from('award_nominations')
+      .select('id', { count: 'exact', head: true });
+
+    const [confirmationEmail, adminAlert] = await Promise.all([
+      sendNominationConfirmation(emailInput),
+      sendAdminNominationAlert({ ...emailInput, nominationNumber: count ?? null }),
+    ]);
 
     if (!confirmationEmail.sent) {
       console.error('Nomination confirmation email was not sent', {
         reference,
         reason: confirmationEmail.reason,
         ...confirmationEmail.diagnostic,
+      });
+    }
+
+    if (!adminAlert.sent) {
+      console.error('Admin nomination alert was not sent', {
+        reference,
+        reason: adminAlert.reason,
+        ...adminAlert.diagnostic,
       });
     }
 
