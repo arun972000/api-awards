@@ -1,7 +1,12 @@
 import { NextRequest } from 'next/server';
 import { ADMIN_COOKIE_NAME, verifyAdminSession } from '@/lib/adminAuth';
 import { getAdminNominationClient } from '@/lib/adminNominations';
-import { fetchAllNominations, nominationExportFields, valueFor } from '@/lib/nominationReport';
+import {
+  exportCellValue,
+  fetchAllNominations,
+  nominationExportFields,
+  nominationNumberFor,
+} from '@/lib/nominationReport';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,10 +29,13 @@ export async function GET(request: NextRequest) {
     const nominations = await fetchAllNominations(getAdminNominationClient());
 
     const lines = [
-      nominationExportFields.map(([label]) => csvCell(label)).join(','),
-      ...nominations.map((row) =>
-        nominationExportFields.map(([, key]) => csvCell(valueFor(row, key))).join(','),
-      ),
+      nominationExportFields.map((field) => csvCell(field.header)).join(','),
+      ...nominations.map((row, index) => {
+        const number = nominationNumberFor(index, nominations.length);
+        return nominationExportFields
+          .map((field) => csvCell(exportCellValue(row, field, number)))
+          .join(',');
+      }),
     ];
     const date = new Date().toISOString().slice(0, 10);
 

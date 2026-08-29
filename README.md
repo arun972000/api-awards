@@ -96,9 +96,16 @@ submitter to retain their submission reference and check their spam folder.
   nomination number, the submission reference and the nominee's details. The submitter's own
   confirmation is sent at the same time; either message can fail without affecting the other, and
   neither failure affects the saved nomination.
-- **The 11am register.** A spreadsheet of the whole register, attached as `.xlsx`. It carries a
-  Summary sheet (total, received in the last 24 hours, counts by category and by status) and a
-  Nominations sheet with every field, a frozen bold header and column filters.
+- **The 11am register.** A spreadsheet of the whole register, attached as `.xlsx`. A Summary sheet
+  carries the total, the last 24 hours and counts by category and by status. A Nominations sheet
+  carries all 40 stored fields per entry: identification and status, the nominee, who submitted and
+  how to reach them, the three written sections, supporting URL and file metadata, all ten
+  declarations, and the internal review columns. Timestamps are rendered in IST, categories and
+  nomination types in their readable form, and the reference column stays pinned while scrolling.
+  Numbering matches what the per-nomination alert quoted, so the oldest entry is number 1.
+
+  The admin CSV download at `/admin/nominations` shares the same field list and formatting, so the
+  two exports can never disagree.
 - **Health check failures**, and nothing else from the check. See below.
 
 ## Scheduled jobs

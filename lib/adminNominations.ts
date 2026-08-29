@@ -16,6 +16,9 @@ export type NominationRecord = {
   nominator_email: string;
   entry_title: string;
   payload: Record<string, unknown>;
+  internal_notes: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
 };
 
 function required(name: string) {
