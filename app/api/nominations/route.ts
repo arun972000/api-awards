@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { categories } from '@/lib/categories';
-import { sendNominationConfirmation } from '@/lib/formsubmit';
+import { sendNominationConfirmation } from '@/lib/email';
 import { nominationSchema } from '@/lib/validation';
 import { getSupabaseAdmin } from '@/lib/supabase';
 

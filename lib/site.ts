@@ -7,9 +7,8 @@ export const siteDescription =
 
 export function getSiteUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  // A production build must never fall back to localhost: this value also
-  // becomes the canonical metadata base, the sitemap host and the request
-  // Origin that FormSubmit requires.
+  // A production build must never fall back to localhost: this value becomes
+  // the canonical metadata base, the sitemap host and the robots host.
   const fallbackSiteUrl =
     process.env.NODE_ENV === 'production' ? productionSiteUrl : developmentSiteUrl;
 

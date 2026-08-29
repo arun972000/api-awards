@@ -15,7 +15,7 @@ Live at <https://api-excellence-awards.vercel.app>.
 - Required eligibility, good-faith, publicity and terms declarations
 - Optional single URL or private supporting-file upload
 - Server-side validation and server-only Supabase writes
-- Nominee confirmation email through FormSubmit after a successful database submission
+- Branded nominee confirmation email through Gmail SMTP after a successful database submission
 - Static-credential admin desk at `/admin/nominations`
 - Authenticated supporting-file downloads and CSV export
 
@@ -25,6 +25,10 @@ Live at <https://api-excellence-awards.vercel.app>.
 2. Add the required values to a local `.env.local`: Supabase URL, service-role key, site URL, static admin credentials and admin session secret.
 3. Apply the SQL files in `supabase/migrations` in filename order.
 4. Start the app with `npm run dev`.
+
+`NEXT_PUBLIC_SITE_URL` sets the canonical metadata base, the sitemap host and the robots host.
+When it is missing, a production build falls back to <https://api-excellence-awards.vercel.app> and
+a development build to `http://localhost:3000`.
 
 The public form posts multipart data to `/api/nominations`. Nomination rows and supporting files are written only by the server with the service-role key. The supporting-material bucket is private, limited to 4 MB, and accepts PDF, Word, JPG and PNG files.
 
@@ -39,45 +43,45 @@ Open `/admin/nominations` and sign in with the configured static username and pa
 
 ## Confirmation email setup
 
-Nomination confirmations are sent through [FormSubmit](https://formsubmit.co) using the awards
-mailbox `apiexcellenceawards2026@gmail.com`. FormSubmit needs no API key, so the only server-only
-environment variable is optional:
+Nominee confirmations are sent through Gmail SMTP from `apiexcellenceawards2026@gmail.com`. Google
+relays the message itself, so SPF and DKIM both align with `gmail.com` and the mail authenticates
+properly. No third-party sending service can do that for a Gmail address — `gmail.com` publishes
+`v=spf1 redirect=_spf.google.com`, which authorises only Google's own servers — which is why mail
+sent as this address through an external provider tends to be filtered as spam.
 
-- `FORMSUBMIT_TARGET` (optional; defaults to `apiexcellenceawards2026@gmail.com`). Set it to the
-  random alias FormSubmit issues after activation to keep the address out of the request URL.
+Add these server-only environment variables locally and in Vercel:
 
-The app also sends the site URL as the request `Origin`. FormSubmit rejects submissions that
-arrive without one. `NEXT_PUBLIC_SITE_URL` supplies it; when that variable is missing, a production
-build falls back to <https://api-excellence-awards.vercel.app> and a development build to
-`http://localhost:3000`. Both origins are accepted by FormSubmit.
+- `GMAIL_USER` (optional; defaults to the address above)
+- `GMAIL_APP_PASSWORD` — a 16-character Google app password
 
-### Activating the mailbox
+### Creating the app password
 
-FormSubmit will not deliver anything until the mailbox is activated once:
+1. Sign in to the `apiexcellenceawards2026@gmail.com` Google Account.
+2. Turn on **Security -> 2-Step Verification**. App passwords are unavailable without it.
+3. Open **Security -> 2-Step Verification -> App passwords**, create one for Mail, and copy the
+   16-character value.
+4. Store it as `GMAIL_APP_PASSWORD`. Google shows it in four spaced blocks; the app strips
+   whitespace, so either form works.
 
-1. The first submission makes FormSubmit email an **Activate Form** link to
-   `apiexcellenceawards2026@gmail.com`.
-2. The mailbox owner opens that email and clicks the link.
-3. FormSubmit then shows a random alias string. Store it in `FORMSUBMIT_TARGET` if you prefer not
-   to expose the address.
+An app password grants full send access to the mailbox and bypasses 2-Step Verification. Keep it
+server-only and revoke it from the same screen if it is ever exposed.
 
-Until the link is clicked, every submission is rejected with the `not_activated` reason and logged
-by `/api/nominations`.
+### Limits and behaviour
 
-### How each email is delivered
+A free Gmail account allows roughly 500 recipients a day, far above expected nomination volume. If
+that cap is reached the send fails with the `rate_limited` reason and the nomination itself is still
+saved. Messages sent this way are copied to the mailbox's own Sent folder, so the awards team keeps
+a record without needing a separate notification email.
 
-FormSubmit always delivers to the activated mailbox and renders its own table template, so the
-nomination lands in the awards inbox and the person who submitted it receives a copy through `_cc`.
-FormSubmit does not accept a custom HTML body, so the previously branded confirmation layout is not
-available; the message is FormSubmit's template built from the submitted fields. FormSubmit's
-`_autoresponse` feature is deliberately unused because it does not work for AJAX submissions or
-when reCAPTCHA is disabled, both of which apply to server-side calls.
+Delivery runs over SMTP on port 465 and so requires the Node.js runtime, which
+`app/api/nominations/route.ts` already declares. Connection, greeting and socket timeouts are set so
+a stalled SMTP session cannot hold the serverless function open until it times out.
 
 After adding or changing Vercel environment variables, create a new production deployment; existing
 deployments do not receive updated environment values.
 
-If FormSubmit is unavailable, the nomination remains saved in Supabase and the success screen tells
-the submitter to retain their submission reference.
+If Gmail is unavailable, the nomination remains saved in Supabase and the success screen tells the
+submitter to retain their submission reference and check their spam folder.
 
 ## Confirm with the client before launch
 

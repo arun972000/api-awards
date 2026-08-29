@@ -11,18 +11,21 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "export:nominations": "node scripts/export-nominations.mjs"
+    "export:nominations": "node scripts/export-nominations.mjs",
+    "email:test": "node --env-file=.env.local scripts/send-test-email.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.112.3",
     "lucide-react": "1.31.0",
     "next": "16.3.1",
+    "nodemailer": "9.0.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "zod": "4.4.3"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
+    "@types/nodemailer": "^8.0.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "eslint": "^9.39.0",
