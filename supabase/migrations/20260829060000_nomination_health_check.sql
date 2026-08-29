@@ -12,7 +12,11 @@ security definer
 set search_path = public, pg_temp
 as $$
 declare
-  probe_reference text := 'API26-' || upper(encode(gen_random_bytes(4), 'hex'));
+  -- gen_random_uuid() is core in Postgres 13+, so it resolves from pg_catalog
+  -- under the restricted search_path below. pgcrypto's gen_random_bytes() does
+  -- not: Supabase installs that extension into the extensions schema.
+  probe_reference text :=
+    'API26-' || upper(substring(replace(gen_random_uuid()::text, '-', '') from 1 for 8));
   written integer;
 begin
   begin
