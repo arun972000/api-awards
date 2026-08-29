@@ -1756,7 +1756,7 @@ textarea:focus-visible {
   display: flex;
   gap: 8px;
   align-items: baseline;
-  margin: 0 0 10px;
+  margin: 0;
   padding: 11px 13px;
   color: #7a5312;
   background: #fdf6e9;

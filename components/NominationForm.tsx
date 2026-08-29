@@ -829,13 +829,13 @@ export default function NominationForm() {
                     {goodFaithConfirmed} of {goodFaithFields.length} confirmed
                   </p>
                 </div>
-                {goodFaithNeedsAttention ? (
-                  <p className='declaration-notice' id={goodFaithErrorId} role='alert'>
-                    Please tick the remaining {goodFaithRemaining}{' '}
-                    {goodFaithRemaining === 1 ? 'statement' : 'statements'} to continue.
-                  </p>
-                ) : null}
                 <div className='declaration-checks'>
+                  {goodFaithNeedsAttention ? (
+                    <p className='declaration-notice' id={goodFaithErrorId} role='alert'>
+                      Please tick the remaining {goodFaithRemaining}{' '}
+                      {goodFaithRemaining === 1 ? 'statement' : 'statements'} to continue.
+                    </p>
+                  ) : null}
                   <Checkbox
                     id='goodFaithAccurate'
                     checked={form.goodFaithAccurate}
