@@ -31,7 +31,7 @@ export const nominationExportFields: NominationExportField[] = [
   { header: 'Nomination type', key: 'nomination_type', width: 20, kind: 'nominationType' },
   { header: 'Contact person', key: 'contactPerson', width: 24 },
   { header: 'Contact email', key: 'nominee_email', width: 28 },
-  { header: 'Contact phone', key: 'contactPhone', width: 15 },
+  { header: 'Contact phone', key: 'contactPhone', width: 18 },
   { header: 'Submitter is the contact', key: 'submitterIsContact', width: 16 },
   { header: 'Person completing the form', key: 'personCompletingForm', width: 24 },
   { header: 'Nominator name', key: 'nominator_name', width: 24 },
@@ -81,6 +81,9 @@ export function valueFor(row: NominationRecord, key: string) {
       return supportingMaterial(row)?.mimeType;
     case 'supportingFileSize':
       return supportingMaterial(row)?.size;
+    case 'contactPhone':
+      // Rows saved before the country selector hold bare national digits.
+      return row.payload?.contactPhoneInternational || row.payload?.contactPhone;
     default:
       if (key in row) return row[key as keyof NominationRecord];
       return row.payload?.[key];

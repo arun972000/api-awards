@@ -1431,6 +1431,65 @@ textarea:focus-visible {
   resize: vertical;
 }
 
+.phone-input {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.phone-country {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 11px;
+  color: var(--ink);
+  background: #f8fafb;
+  border: 1px solid #cbd3da;
+  border-radius: 2px;
+}
+
+.phone-country > span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.phone-flag {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* The native select covers the label invisibly, so a tap opens the phone's own
+   picker and keyboard focus still lands on a real control. */
+.phone-country > select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.phone-country:has(> select:focus-visible) {
+  border-color: var(--burgundy);
+  outline: 3px solid rgba(23, 59, 94, 0.3);
+  outline-offset: 2px;
+}
+
+.phone-input > input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.field.has-error .phone-country {
+  border-color: #a83d47;
+}
+
 .field input:focus,
 .field textarea:focus {
   border-color: var(--burgundy);
@@ -1675,6 +1734,35 @@ textarea:focus-visible {
 .declaration-checks .checkbox-field.has-error {
   background: #fff6f5;
   border-color: #c77d83;
+}
+
+/* Seven simultaneous red panels read as a wall of failure. Where one shared
+   message covers the group, mark the outstanding boxes quietly instead. */
+.declaration-checks .checkbox-field.needs-confirmation {
+  background: #fffaf2;
+  border-color: #dcc9a6;
+  box-shadow: inset 3px 0 0 #c79a4b;
+}
+
+.declaration-progress {
+  margin: 9px 0 0;
+  color: var(--burgundy);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.declaration-notice {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin: 0 0 10px;
+  padding: 11px 13px;
+  color: #7a5312;
+  background: #fdf6e9;
+  border-left: 3px solid #c79a4b;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .terms-disclosure {

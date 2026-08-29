@@ -1,6 +1,13 @@
 import { z } from 'zod';
 import { awardDates } from '@/lib/awardContent';
 import { categoryIds } from '@/lib/categories';
+import {
+  defaultPhoneCountry,
+  findPhoneCountry,
+  isSupportedPhoneCountry,
+  isValidNationalNumber,
+  toInternationalNumber,
+} from '@/lib/phone';
 
 // Nominators are not technical. Every rule carries its own wording so Zod's
 // developer-facing defaults ("Invalid input: expected true") never reach them.
@@ -12,15 +19,23 @@ const optionalUrl = z
   .optional()
   .or(z.literal(''));
 
-const optionalPhone = z
+// Nominators are not all in India, so the number is held as national digits
+// plus a country, and checked against that country's own rules.
+const optionalPhoneDigits = z
   .string()
   .trim()
-  .max(10, 'Enter a 10-digit phone number.')
-  .refine((value) => value === '' || /^\d{10}$/u.test(value), {
-    error: 'Enter a 10-digit phone number using numbers only.',
+  .max(15, 'That phone number is too long.')
+  .refine((value) => value === '' || /^\d+$/u.test(value), {
+    error: 'Enter the phone number using numbers only.',
   })
   .optional()
   .or(z.literal(''));
+
+const phoneCountry = z
+  .string()
+  .trim()
+  .refine(isSupportedPhoneCountry, { error: 'Choose a country dialling code.' })
+  .default(defaultPhoneCountry);
 
 /** Every good-faith style tick box, worded as an instruction rather than a rule. */
 function requiredConfirmation(instruction: string) {
@@ -69,7 +84,8 @@ export const nominationSchema = z
       .trim()
       .email('Enter a valid email address.')
       .max(200, 'That email address is too long.'),
-    contactPhone: optionalPhone,
+    contactPhone: optionalPhoneDigits,
+    contactPhoneCountry: phoneCountry,
     briefDescription: requiredWordLimitedText('Brief description', 300, 3_500),
     impactOutcomes: requiredWordLimitedText('Impact and outcomes', 150, 2_000),
     meritRecognition: requiredWordLimitedText('Reason for recognition', 150, 2_000),
@@ -110,6 +126,15 @@ export const nominationSchema = z
     websiteConfirm: z.string().max(0).optional().or(z.literal('')),
   })
   .superRefine((data, context) => {
+    if (data.contactPhone && !isValidNationalNumber(data.contactPhone, data.contactPhoneCountry)) {
+      context.addIssue({
+        code: 'custom',
+        path: ['contactPhone'],
+        message:
+          'Enter a valid phone number for ' + findPhoneCountry(data.contactPhoneCountry).name + '.',
+      });
+    }
+
     if (data.category === 'young_professional' && !data.ageEligibilityConfirmed) {
       context.addIssue({
         code: 'custom',
@@ -131,6 +156,11 @@ export const nominationSchema = z
     personCompletingForm: data.submitterIsContact
       ? data.contactPerson
       : data.personCompletingForm,
+    // Stored alongside the parts so the register and the export read one value.
+    contactPhoneInternational: toInternationalNumber(
+      data.contactPhone ?? '',
+      data.contactPhoneCountry,
+    ),
   }));
 
 export type NominationInput = z.input<typeof nominationSchema>;

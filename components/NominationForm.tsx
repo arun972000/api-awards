@@ -7,6 +7,7 @@ import {
   CalendarDays,
   Check,
   CheckCircle2,
+  ChevronDown,
   CircleAlert,
   FileText,
   Inbox,
@@ -18,6 +19,12 @@ import {
 import AwardTerms from '@/components/AwardTerms';
 import { awardDates } from '@/lib/awardContent';
 import { categories, type CategoryId } from '@/lib/categories';
+import {
+  defaultPhoneCountry,
+  findPhoneCountry,
+  normalisePhoneDigits,
+  phoneCountries,
+} from '@/lib/phone';
 import { countWords, nominationSchema } from '@/lib/validation';
 
 type FormState = {
@@ -28,6 +35,7 @@ type FormState = {
   contactPerson: string;
   contactEmail: string;
   contactPhone: string;
+  contactPhoneCountry: string;
   briefDescription: string;
   impactOutcomes: string;
   meritRecognition: string;
@@ -55,6 +63,7 @@ const initialForm: FormState = {
   contactPerson: '',
   contactEmail: '',
   contactPhone: '',
+  contactPhoneCountry: defaultPhoneCountry,
   briefDescription: '',
   impactOutcomes: '',
   meritRecognition: '',
@@ -107,7 +116,7 @@ const readableFieldNames: Partial<Record<keyof FormState, string>> = {
   entryTitle: 'the initiative or contribution title',
   contactPerson: 'a contact person',
   contactEmail: 'a contact email',
-  contactPhone: 'a valid 10-digit phone number',
+  contactPhone: 'a valid phone number',
   briefDescription: 'a brief description',
   impactOutcomes: 'the impact or outcomes',
   meritRecognition: 'why the nomination merits recognition',
@@ -125,6 +134,20 @@ const readableFieldNames: Partial<Record<keyof FormState, string>> = {
 
 // Headings for the error summary. readableFieldNames carries articles for the
 // "Please provide ..." sentence, which reads wrong as a heading.
+// All must be ticked, so they share one message rather than repeating it seven
+// times. Keeping them in one list also drives the "x of 7 confirmed" counter.
+const goodFaithFields = [
+  'goodFaithAccurate',
+  'goodFaithResponsibility',
+  'goodFaithAuthority',
+  'goodFaithClarification',
+  'goodFaithDisqualification',
+  'goodFaithIpRights',
+  'indiaEligibilityConfirmed',
+] as const satisfies readonly (keyof FormState)[];
+
+const goodFaithErrorId = 'goodFaith-error';
+
 const fieldLabels: Partial<Record<keyof FormState, string>> = {
   category: 'Award category',
   nomineeKind: 'Nominee type',
@@ -133,6 +156,7 @@ const fieldLabels: Partial<Record<keyof FormState, string>> = {
   contactPerson: 'Contact person',
   contactEmail: 'Contact email',
   contactPhone: 'Contact phone',
+  contactPhoneCountry: 'Country dialling code',
   briefDescription: 'Brief description',
   impactOutcomes: 'Impact and outcomes',
   meritRecognition: 'Why it merits recognition',
@@ -158,6 +182,7 @@ const fieldSteps: Partial<Record<keyof FormState, number>> = {
   contactPerson: 2,
   contactEmail: 2,
   contactPhone: 2,
+  contactPhoneCountry: 2,
   ageEligibilityConfirmed: 2,
   briefDescription: 3,
   impactOutcomes: 3,
@@ -175,16 +200,6 @@ const fieldSteps: Partial<Record<keyof FormState, number>> = {
   publicityConfirmed: 4,
   termsAccepted: 4,
 };
-
-function normalisePhone(value: string) {
-  let digits = value.replace(/\D/gu, '');
-  // Indian mobile numbers are ten digits, so anything longer carries a country
-  // code or trunk prefix that a paste brought along.
-  while (digits.length > 10 && (digits.startsWith('0') || digits.startsWith('91'))) {
-    digits = digits.startsWith('0') ? digits.slice(1) : digits.slice(2);
-  }
-  return digits.slice(0, 10);
-}
 
 function normaliseFieldErrors(
   fieldErrors: Partial<Record<keyof FormState, string[] | string | undefined>>,
@@ -297,8 +312,8 @@ export default function NominationForm() {
       if (form.contactEmail && !/^\S+@\S+\.\S+$/.test(form.contactEmail)) {
         nextErrors.contactEmail = 'Enter a valid email address.';
       }
-      if (form.contactPhone && !/^\d{10}$/u.test(form.contactPhone)) {
-        nextErrors.contactPhone = 'Enter a 10-digit phone number using numbers only.';
+      if (form.contactPhone && !/^\d+$/u.test(form.contactPhone)) {
+        nextErrors.contactPhone = 'Enter the phone number using numbers only.';
       }
       if (form.category === 'young_professional' && !form.ageEligibilityConfirmed) {
         nextErrors.ageEligibilityConfirmed =
@@ -425,6 +440,10 @@ export default function NominationForm() {
       setServerMessage(error instanceof Error ? error.message : 'Unable to submit the nomination.');
     }
   }
+
+  const goodFaithConfirmed = goodFaithFields.filter((field) => form[field] === true).length;
+  const goodFaithRemaining = goodFaithFields.length - goodFaithConfirmed;
+  const goodFaithNeedsAttention = goodFaithFields.some((field) => Boolean(errors[field]));
 
   if (status === 'success') {
     return (
@@ -628,18 +647,12 @@ export default function NominationForm() {
                   hint='We will send the nomination receipt and submission reference to this address.'
                   required
                 />
-                <Field
-                  id='contactPhone'
-                  label='Phone number'
-                  type='tel'
+                <PhoneField
+                  country={form.contactPhoneCountry}
                   value={form.contactPhone}
-                  onChange={(value) => update('contactPhone', normalisePhone(value))}
+                  onCountryChange={(code) => update('contactPhoneCountry', code)}
+                  onChange={(value) => update('contactPhone', normalisePhoneDigits(value))}
                   error={errors.contactPhone}
-                  maxLength={10}
-                  autoComplete='tel'
-                  inputMode='numeric'
-                  pattern='[0-9]{10}'
-                  hint='Enter a 10-digit number.'
                 />
               </div>
               {form.category === 'young_professional' && (
@@ -812,13 +825,23 @@ export default function NominationForm() {
                 <div className='declaration-heading'>
                   <span>Good-faith declaration</span>
                   <p>Confirm every statement below.</p>
+                  <p className='declaration-progress'>
+                    {goodFaithConfirmed} of {goodFaithFields.length} confirmed
+                  </p>
                 </div>
+                {goodFaithNeedsAttention ? (
+                  <p className='declaration-notice' id={goodFaithErrorId} role='alert'>
+                    Please tick the remaining {goodFaithRemaining}{' '}
+                    {goodFaithRemaining === 1 ? 'statement' : 'statements'} to continue.
+                  </p>
+                ) : null}
                 <div className='declaration-checks'>
                   <Checkbox
                     id='goodFaithAccurate'
                     checked={form.goodFaithAccurate}
                     onChange={(checked) => update('goodFaithAccurate', checked)}
                     error={errors.goodFaithAccurate}
+                    groupErrorId={goodFaithErrorId}
                     label='The information is submitted in good faith and is accurate, complete and not misleading to the best of my knowledge.'
                   />
                   <Checkbox
@@ -826,6 +849,7 @@ export default function NominationForm() {
                     checked={form.goodFaithResponsibility}
                     onChange={(checked) => update('goodFaithResponsibility', checked)}
                     error={errors.goodFaithResponsibility}
+                    groupErrorId={goodFaithErrorId}
                     label='I accept responsibility for the information, claims and materials submitted.'
                   />
                   <Checkbox
@@ -833,6 +857,7 @@ export default function NominationForm() {
                     checked={form.goodFaithAuthority}
                     onChange={(checked) => update('goodFaithAuthority', checked)}
                     error={errors.goodFaithAuthority}
+                    groupErrorId={goodFaithErrorId}
                     label='I have the authority and permissions required to submit this information and supporting material.'
                   />
                   <Checkbox
@@ -840,6 +865,7 @@ export default function NominationForm() {
                     checked={form.goodFaithClarification}
                     onChange={(checked) => update('goodFaithClarification', checked)}
                     error={errors.goodFaithClarification}
+                    groupErrorId={goodFaithErrorId}
                     label='I understand that API may seek clarification or verification of any information submitted.'
                   />
                   <Checkbox
@@ -847,6 +873,7 @@ export default function NominationForm() {
                     checked={form.goodFaithDisqualification}
                     onChange={(checked) => update('goodFaithDisqualification', checked)}
                     error={errors.goodFaithDisqualification}
+                    groupErrorId={goodFaithErrorId}
                     label='I understand that misrepresentation or material inaccuracies may lead to disqualification or withdrawal of recognition.'
                   />
                   <Checkbox
@@ -854,6 +881,7 @@ export default function NominationForm() {
                     checked={form.goodFaithIpRights}
                     onChange={(checked) => update('goodFaithIpRights', checked)}
                     error={errors.goodFaithIpRights}
+                    groupErrorId={goodFaithErrorId}
                     label='The submission does not knowingly infringe any third-party intellectual-property, privacy or confidentiality rights.'
                   />
                   <Checkbox
@@ -861,6 +889,7 @@ export default function NominationForm() {
                     checked={form.indiaEligibilityConfirmed}
                     onChange={(checked) => update('indiaEligibilityConfirmed', checked)}
                     error={errors.indiaEligibilityConfirmed}
+                    groupErrorId={goodFaithErrorId}
                     label='I confirm that the nominated work was undertaken, implemented or substantially delivered in India.'
                   />
                 </div>
@@ -970,6 +999,73 @@ function FormErrorSummary({
   );
 }
 
+function PhoneField({
+  country,
+  value,
+  onCountryChange,
+  onChange,
+  error,
+}: {
+  country: string;
+  value: string;
+  onCountryChange: (code: string) => void;
+  onChange: (value: string) => void;
+  error?: string;
+}) {
+  const selected = findPhoneCountry(country);
+
+  return (
+    <div className={`field ${error ? 'has-error' : ''}`}>
+      <label htmlFor='contactPhone'>
+        Phone number <span className='optional-tag'>Optional</span>
+      </label>
+      <div className='phone-input'>
+        <div className='phone-country'>
+          <span aria-hidden='true'>
+            <span className='phone-flag'>{selected.flag}</span>
+            +{selected.dialCode}
+            <ChevronDown size={14} />
+          </span>
+          {/* A real select, so mobile opens the native picker and the keyboard
+              and screen reader get the control they expect. */}
+          <select
+            aria-label='Country dialling code'
+            value={selected.code}
+            onChange={(event) => onCountryChange(event.target.value)}
+          >
+            {phoneCountries.map((option) => (
+              <option key={option.code} value={option.code}>
+                {option.flag} {option.name} (+{option.dialCode})
+              </option>
+            ))}
+          </select>
+        </div>
+        <input
+          id='contactPhone'
+          type='tel'
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          autoComplete='tel-national'
+          inputMode='numeric'
+          maxLength={15}
+          aria-invalid={Boolean(error)}
+          aria-describedby={
+            error ? 'contactPhone-hint contactPhone-error' : 'contactPhone-hint'
+          }
+        />
+      </div>
+      <small id='contactPhone-hint' className='field-hint'>
+        Pick your country, then enter the number without the country code.
+      </small>
+      {error ? (
+        <small id='contactPhone-error' className='field-error'>
+          {error}
+        </small>
+      ) : null}
+    </div>
+  );
+}
+
 type FieldProps = {
   id: string;
   label: string;
@@ -1064,11 +1160,20 @@ type CheckboxProps = {
   onChange: (checked: boolean) => void;
   label: string;
   error?: string;
+  /**
+   * Set where several boxes must all be ticked. The group shows one message
+   * instead of repeating it under every box, so an untouched step does not
+   * turn into a wall of red.
+   */
+  groupErrorId?: string;
 };
 
-function Checkbox({ id, checked, onChange, label, error }: CheckboxProps) {
+function Checkbox({ id, checked, onChange, label, error, groupErrorId }: CheckboxProps) {
+  const grouped = Boolean(groupErrorId);
+  const state = error ? (grouped ? 'needs-confirmation' : 'has-error') : '';
+
   return (
-    <div className={`checkbox-field ${error ? 'has-error' : ''}`}>
+    <div className={`checkbox-field ${state}`}>
       <label htmlFor={id}>
         <input
           id={id}
@@ -1076,12 +1181,14 @@ function Checkbox({ id, checked, onChange, label, error }: CheckboxProps) {
           checked={checked}
           onChange={(event) => onChange(event.target.checked)}
           aria-invalid={Boolean(error)}
-          aria-describedby={error ? `${id}-error` : undefined}
+          aria-describedby={error ? (groupErrorId ?? `${id}-error`) : undefined}
         />
         <span className='custom-checkbox' aria-hidden='true'><Check size={14} /></span>
         <span>{label}</span>
       </label>
-      {error ? <small id={`${id}-error`} className='field-error'>{error}</small> : null}
+      {error && !grouped ? (
+        <small id={`${id}-error`} className='field-error'>{error}</small>
+      ) : null}
     </div>
   );
 }
