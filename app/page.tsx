@@ -39,17 +39,14 @@ export default function Home() {
         <div className="status-message">
           <span className="status-label"><span aria-hidden="true" />Nominations open</span>
           <p>
-            Know an organisation, initiative or individual advancing Indian publishing?
-            Put them forward for the API Excellence Awards 2026.
+            Open to individuals, organisations and teams across the Indian publishing
+            ecosystem.
           </p>
         </div>
         <p className="status-closing">
           <span>Nominations close</span>
           <strong>{awardDates.nominationsClose}</strong>
         </p>
-        <a className="button status-button" href="#nominate">
-          Nominate now <ArrowDown size={16} />
-        </a>
       </aside>
 
       <header className="site-header">
@@ -64,7 +61,6 @@ export default function Home() {
           />
         </a>
         <div className="header-actions">
-          <span className="edition-pill">Closes {awardDates.nominationsClose}</span>
           <a
             className="button button-small"
             href="#nominate"
@@ -78,9 +74,7 @@ export default function Home() {
       <section className="hero" id="top">
         <div className="hero-grain" />
         <div className="hero-copy">
-          <p className="eyebrow light">
-            Nominations open · Closes {awardDates.nominationsClose}
-          </p>
+          <p className="eyebrow light">Founders Edition · 2026</p>
           <h1>
             Excellence,
             <br />
