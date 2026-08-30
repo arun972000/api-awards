@@ -1,6 +1,12 @@
 export const awardDates = {
   eligibilityStarts: "1 January 2025",
+  // Date only. Used where the deadline is a cut-off date rather than a moment,
+  // such as the under-35 test and the eligibility window.
   nominationsClose: "10 September 2026",
+  nominationsCloseTime: "5:00 pm IST",
+  nominationsCloseLong: "5:00 pm IST on 10 September 2026",
+  // The actual closing moment, for the countdown.
+  nominationsCloseIso: "2026-09-10T17:00:00+05:30",
   ceremony: "25 September 2026",
 } as const;
 

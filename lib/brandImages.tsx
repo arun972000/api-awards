@@ -152,6 +152,9 @@ export async function createSocialImage() {
               NOMINATIONS CLOSE
             </span>
             <strong style={{ fontSize: 30 }}>{awardDates.nominationsClose}</strong>
+            <span style={{ color: '#aeb7bf', fontSize: 18 }}>
+              {awardDates.nominationsCloseTime}
+            </span>
           </div>
           <div
             style={{

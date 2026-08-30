@@ -1,9 +1,13 @@
+import { awardDates } from '@/lib/awardContent';
+
 const productionSiteUrl = 'https://api-excellence-awards.vercel.app';
 const developmentSiteUrl = 'http://localhost:3000';
 
 export const siteName = 'API Excellence Awards 2026';
+// Read from awardDates so the description cannot drift from the deadline.
 export const siteDescription =
-  'Nominate an organisation, initiative or individual advancing Indian publishing. Nominations close 10 September 2026.';
+  'Nominate an organisation, initiative or individual advancing Indian publishing. ' +
+  `Nominations close at ${awardDates.nominationsCloseLong}.`;
 
 export function getSiteUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();

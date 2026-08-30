@@ -515,7 +515,12 @@ export default function NominationForm() {
           </p>
           <div className='form-deadline'>
             <CalendarDays size={17} />
-            <span>Nominations close<strong>{awardDates.nominationsClose}</strong></span>
+            <span>
+              Nominations close
+              <strong>
+                {awardDates.nominationsClose}, {awardDates.nominationsCloseTime}
+              </strong>
+            </span>
           </div>
           <ol className='step-list'>
             {steps.map((label, index) => {
@@ -537,7 +542,12 @@ export default function NominationForm() {
         <form className='nomination-form' onSubmit={submitNomination} noValidate>
           <div className='mobile-deadline'>
             <CalendarDays size={17} />
-            <span>Nominations close <strong>{awardDates.nominationsClose}</strong></span>
+            <span>
+              Nominations close{' '}
+              <strong>
+                {awardDates.nominationsClose}, {awardDates.nominationsCloseTime}
+              </strong>
+            </span>
           </div>
           <div className='mobile-step-copy'>
             <span>Step {step} of 4</span>

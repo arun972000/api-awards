@@ -230,7 +230,7 @@ function createEmailContent(input: ConfirmationEmailInput) {
     `Submitted: ${submissionDate}`,
     '',
     'Please keep the submission reference for any correspondence with the Association of Publishers in India.',
-    `Nominations close on ${awardDates.nominationsClose}. The awards ceremony will be held on ${awardDates.ceremony}.`,
+    `Nominations close at ${awardDates.nominationsCloseLong}. The awards ceremony will be held on ${awardDates.ceremony}.`,
     '',
     'This email confirms receipt only. It does not indicate that the nominee has been shortlisted or selected.',
     '',
@@ -267,7 +267,7 @@ function createEmailContent(input: ConfirmationEmailInput) {
             </div>
             <table role='presentation' width='100%' cellspacing='0' cellpadding='0' style='margin-top:24px;border-collapse:collapse;font-size:14px;line-height:1.55;'>${details}</table>
             <p style='margin:24px 0 0;font-size:14px;line-height:1.7;'>Please keep your reference for correspondence with the Association of Publishers in India.</p>
-            <p style='margin:16px 0 0;padding:16px 18px;background:#e9eef2;color:#173b5e;font-size:14px;line-height:1.6;'><strong>Nominations close ${awardDates.nominationsClose}.</strong><br>The awards ceremony will be held on ${awardDates.ceremony}.</p>
+            <p style='margin:16px 0 0;padding:16px 18px;background:#e9eef2;color:#173b5e;font-size:14px;line-height:1.6;'><strong>Nominations close at ${awardDates.nominationsCloseLong}.</strong><br>The awards ceremony will be held on ${awardDates.ceremony}.</p>
             <p style='margin:22px 0 0;color:#657684;font-size:12px;line-height:1.6;'>This email confirms receipt only. It does not indicate that the nominee has been shortlisted or selected.</p>
           </td></tr>
           <tr><td style='padding:22px 34px;background:#e3e6e8;color:#526474;font-size:12px;line-height:1.6;'>API Excellence Awards 2026<br>Association of Publishers in India</td></tr>

@@ -10,6 +10,7 @@ import {
   Scale,
   ShieldCheck,
 } from "lucide-react";
+import NominationCountdown from "@/components/NominationCountdown";
 import NominationForm from "@/components/NominationForm";
 import { categories } from "@/lib/categories";
 import { awardDates } from "@/lib/awardContent";
@@ -45,7 +46,9 @@ export default function Home() {
         </div>
         <p className="status-closing">
           <span>Nominations close</span>
-          <strong>{awardDates.nominationsClose}</strong>
+          <strong>
+            {awardDates.nominationsClose}, {awardDates.nominationsCloseTime}
+          </strong>
         </p>
       </aside>
 
@@ -92,6 +95,7 @@ export default function Home() {
               Explore the five awards <ArrowDown size={15} />
             </a>
           </div>
+          <NominationCountdown />
         </div>
         <div className="hero-art" aria-hidden="true">
           <div className="laurel laurel-left">
@@ -113,9 +117,6 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-meta">
-          <span>
-            <CalendarDays size={16} /> Nominations close · {awardDates.nominationsClose}
-          </span>
           <span>
             <CalendarDays size={16} /> Awards ceremony · {awardDates.ceremony}
           </span>
@@ -198,7 +199,7 @@ export default function Home() {
             <p className="eyebrow light">Before you begin</p>
             <h2>What you&apos;ll need to nominate</h2>
             <p className="preparation-deadline">
-              Nominations close on <strong>{awardDates.nominationsClose}</strong>.
+              Nominations close at <strong>{awardDates.nominationsCloseLong}</strong>.
             </p>
           </div>
           <ul>
