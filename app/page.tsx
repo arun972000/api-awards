@@ -7,13 +7,15 @@ import {
   BookOpen,
   CalendarDays,
   Check,
+  Clock,
+  MapPin,
   Scale,
   ShieldCheck,
 } from "lucide-react";
 import NominationCountdown from "@/components/NominationCountdown";
 import NominationForm from "@/components/NominationForm";
 import { categories } from "@/lib/categories";
-import { awardDates } from "@/lib/awardContent";
+import { awardCeremony, awardDates } from "@/lib/awardContent";
 
 const principles = [
   {
@@ -190,6 +192,48 @@ export default function Home() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="ceremony" id="ceremony">
+        <div className="section-shell ceremony-grid">
+          <div className="ceremony-intro">
+            <p className="eyebrow">The awards evening</p>
+            <h2>Winners announced in New Delhi.</h2>
+            <p>
+              The five Founders Edition winners will be revealed at the API Excellence Awards
+              ceremony. Finalists are invited to attend.
+            </p>
+          </div>
+          <div className="ceremony-card">
+            <dl>
+              <div>
+                <dt><CalendarDays size={14} aria-hidden="true" /> Date</dt>
+                <dd>{awardDates.ceremony}</dd>
+              </div>
+              <div>
+                <dt><Clock size={14} aria-hidden="true" /> Time</dt>
+                <dd>{awardCeremony.time}</dd>
+              </div>
+              <div>
+                <dt><MapPin size={14} aria-hidden="true" /> Venue</dt>
+                <dd>
+                  <strong>{awardCeremony.hall}</strong>
+                  {awardCeremony.building}
+                  <br />
+                  {awardCeremony.street}, {awardCeremony.city}
+                </dd>
+              </div>
+            </dl>
+            <a
+              className="text-link"
+              href={awardCeremony.mapUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View on map <ArrowUpRight size={15} />
+            </a>
+          </div>
         </div>
       </section>
 

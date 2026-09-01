@@ -10,6 +10,20 @@ export const awardDates = {
   ceremony: "25 September 2026",
 } as const;
 
+// The ceremony where the five winners are announced. Held apart from
+// awardDates so the address can also feed structured data.
+export const awardCeremony = {
+  time: "7:00 pm onwards",
+  startIso: "2026-09-25T19:00:00+05:30",
+  hall: "Tamarind Hall",
+  building: "India Habitat Centre",
+  street: "Lodhi Road",
+  city: "New Delhi",
+  country: "India",
+  mapUrl:
+    "https://www.google.com/maps/search/?api=1&query=Tamarind+Hall+India+Habitat+Centre+Lodhi+Road+New+Delhi",
+} as const;
+
 export const awardsContactEmail = "associationofpublishers@gmail.com";
 
 export const awardTerms = [
