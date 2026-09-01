@@ -1,6 +1,6 @@
 import { awardDates } from '@/lib/awardContent';
 
-const productionSiteUrl = 'https://api-excellence-awards.vercel.app';
+const productionSiteUrl = 'https://apiexcellenceawards.co.in';
 const developmentSiteUrl = 'http://localhost:3000';
 
 export const siteName = 'API Excellence Awards 2026';

@@ -2,7 +2,7 @@
 
 A single-page Next.js nomination experience for the Association of Publishers in India (API) Excellence Awards, Founders Edition.
 
-Live at <https://api-excellence-awards.vercel.app>.
+Live at <https://apiexcellenceawards.co.in>.
 
 ## Included
 
@@ -32,7 +32,7 @@ Live at <https://api-excellence-awards.vercel.app>.
 4. Start the app with `npm run dev`.
 
 `NEXT_PUBLIC_SITE_URL` sets the canonical metadata base, the sitemap host and the robots host.
-When it is missing, a production build falls back to <https://api-excellence-awards.vercel.app> and
+When it is missing, a production build falls back to <https://apiexcellenceawards.co.in> and
 a development build to `http://localhost:3000`.
 
 The public form posts multipart data to `/api/nominations`. Nomination rows and supporting files are written only by the server with the service-role key. The supporting-material bucket is private, limited to 4 MB, and accepts PDF, Word, JPG and PNG files.
@@ -123,7 +123,7 @@ that header automatically once `CRON_SECRET` exists in the project environment; 
 is missing the routes reject every request, including Vercel's own. Trigger either by hand with:
 
 ```
-curl -H "Authorization: Bearer $CRON_SECRET"   https://api-excellence-awards.vercel.app/api/cron/daily-report
+curl -H "Authorization: Bearer $CRON_SECRET"   https://apiexcellenceawards.co.in/api/cron/daily-report
 ```
 
 The Hobby plan allows exactly two cron jobs at one run per day, which is precisely what this uses,
@@ -154,6 +154,5 @@ a useful signal.
 ## Confirm with the client before launch
 
 - Finalist announcement date
-- Whether the awards move to a custom domain from `api-excellence-awards.vercel.app`
 
 The ceremony date is set to 25 September 2026 from the revised client Terms and Conditions.
