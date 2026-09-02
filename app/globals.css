@@ -180,8 +180,9 @@ textarea:focus-visible {
 .brand-logo {
   display: block;
   width: auto;
-  height: 58px;
+  height: 72px;
   object-fit: contain;
+  border-radius: 4px;
 }
 
 .header-actions {
@@ -1003,6 +1004,33 @@ textarea:focus-visible {
 .privacy-note svg {
   flex: 0 0 auto;
   color: var(--gold);
+}
+
+.support-note {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding-top: 14px;
+  color: rgba(255, 255, 255, 0.53);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.support-note svg {
+  flex: 0 0 auto;
+  color: var(--gold);
+}
+
+.support-note a {
+  color: var(--white);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.support-note a:hover {
+  color: var(--gold-light);
 }
 
 .nomination-form {
@@ -2205,28 +2233,39 @@ footer {
 
 .footer-logo-mark {
   display: block;
-  width: 54px;
-  height: 54px;
+  width: 74px;
+  height: 74px;
   flex: 0 0 auto;
   overflow: hidden;
-  padding: 5px;
-  background: var(--white);
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
 }
 
 .footer-logo-source {
   display: block;
-  width: auto;
-  max-width: none;
-  height: 44px;
-  object-fit: contain;
-  object-position: left center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.footer-contacts {
+  display: flex;
+  gap: clamp(28px, 5vw, 64px);
+  align-items: flex-start;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .footer-contact {
   display: grid;
   gap: 8px;
   text-align: right;
+}
+
+.footer-contact small {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 10px;
+  line-height: 1.45;
 }
 
 .footer-contact span {
@@ -2276,9 +2315,10 @@ footer {
 }
 
 .not-found-logo {
-  width: min(100%, 270px);
+  width: min(100%, 180px);
   height: auto;
-  margin-bottom: 38px;
+  margin-bottom: 32px;
+  border-radius: 6px;
 }
 
 .not-found-code {
@@ -2470,6 +2510,15 @@ footer {
 }
 
 @media (max-width: 600px) {
+  .footer-contacts {
+    justify-content: flex-start;
+    gap: 22px;
+  }
+
+  .footer-contact {
+    text-align: left;
+  }
+
   .ceremony {
     padding-block: 46px;
   }
@@ -2530,7 +2579,7 @@ footer {
 
   .brand-logo {
     width: auto;
-    height: 38px;
+    height: 50px;
   }
 
   .button-small {

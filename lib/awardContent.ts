@@ -26,6 +26,15 @@ export const awardCeremony = {
 
 export const awardsContactEmail = "associationofpublishers@gmail.com";
 
+// Who to call when the site or the form itself misbehaves, as distinct from
+// questions about a nomination.
+export const websiteSupport = {
+  name: "Vaman",
+  role: "API Website Management",
+  phone: "+918800985529",
+  phoneDisplay: "+91 88009 85529",
+} as const;
+
 export const awardTerms = [
   {
     title: "Eligibility",

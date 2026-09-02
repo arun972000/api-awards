@@ -15,7 +15,7 @@ import {
 import NominationCountdown from "@/components/NominationCountdown";
 import NominationForm from "@/components/NominationForm";
 import { categories } from "@/lib/categories";
-import { awardCeremony, awardDates } from "@/lib/awardContent";
+import { awardCeremony, awardDates, websiteSupport } from "@/lib/awardContent";
 
 const principles = [
   {
@@ -58,10 +58,10 @@ export default function Home() {
         <a className="brand" href="#top" aria-label="API Excellence Awards home">
           <Image
             className="brand-logo"
-            src="/api-publishers-logo-navbar.png"
-            alt="Association of Publishers in India"
-            width={2074}
-            height={523}
+            src="/new logo.jpg"
+            alt="API Excellence Awards 2026"
+            width={859}
+            height={859}
             priority
           />
         </a>
@@ -271,10 +271,10 @@ export default function Home() {
             <span className="footer-logo-mark" aria-hidden="true">
               <Image
                 className="footer-logo-source"
-                src="/api-publishers-logo-navbar.png"
+                src="/new logo.jpg"
                 alt=""
-                width={2074}
-                height={523}
+                width={859}
+                height={859}
               />
             </span>
             <div>
@@ -282,11 +282,20 @@ export default function Home() {
               <p>Advancing publishing through advocacy, collaboration, and excellence.</p>
             </div>
           </div>
-          <div className="footer-contact">
-            <span>Nomination enquiries</span>
-            <a href="mailto:associationofpublishers@gmail.com">
-              associationofpublishers@gmail.com
-            </a>
+          <div className="footer-contacts">
+            <div className="footer-contact">
+              <span>Nomination enquiries</span>
+              <a href="mailto:associationofpublishers@gmail.com">
+                associationofpublishers@gmail.com
+              </a>
+            </div>
+            <div className="footer-contact">
+              <span>Website support</span>
+              <a href={`tel:${websiteSupport.phone}`}>{websiteSupport.phoneDisplay}</a>
+              <small>
+                {websiteSupport.name} · {websiteSupport.role}
+              </small>
+            </div>
           </div>
         </div>
         <div className="footer-bottom">
