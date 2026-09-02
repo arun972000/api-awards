@@ -83,9 +83,10 @@
 
 .loginLogo {
   display: block;
-  width: min(100%, 292px);
+  width: 146px;
   height: auto;
-  margin-bottom: 36px;
+  margin: 0 auto 30px;
+  border-radius: 6px;
 }
 
 .lockMark {
@@ -231,8 +232,10 @@
 
 .headerLogo {
   display: block;
-  width: min(260px, 39vw);
-  height: auto;
+  width: 62px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 .headerDivider {
@@ -540,7 +543,7 @@
   .header { min-height: 74px; padding-inline: 18px; }
   .headerDivider,
   .headerTitle { display: none; }
-  .headerLogo { width: min(230px, 52vw); }
+  .headerLogo { width: 52px; height: 52px; }
   .logoutButton { padding: 0 12px; }
   .hero { align-items: stretch; flex-direction: column; padding: 41px 22px 53px; }
   .hero h1 { font-size: 44px; }
