@@ -292,9 +292,6 @@ export default function Home() {
             <div className="footer-contact">
               <span>Website support</span>
               <a href={`tel:${websiteSupport.phone}`}>{websiteSupport.phoneDisplay}</a>
-              <small>
-                {websiteSupport.name} · {websiteSupport.role}
-              </small>
             </div>
           </div>
         </div>

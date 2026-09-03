@@ -541,7 +541,7 @@ export default function NominationForm() {
           <div className='support-note'>
             <PhoneCall size={16} />
             <span>
-              Trouble with this form? Call {websiteSupport.name} on{' '}
+              Trouble with this form? Call{' '}
               <a href={`tel:${websiteSupport.phone}`}>{websiteSupport.phoneDisplay}</a>.
             </span>
           </div>
