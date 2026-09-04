@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import NominationCountdown from "@/components/NominationCountdown";
 import NominationForm from "@/components/NominationForm";
+import AwardStructuredData from "@/components/AwardStructuredData";
 import { categories } from "@/lib/categories";
 import { awardCeremony, awardDates } from "@/lib/awardContent";
 
@@ -38,6 +39,7 @@ const principles = [
 export default function Home() {
   return (
     <main id="main-content">
+      <AwardStructuredData />
       <aside className="nomination-status" aria-label="Nomination status">
         <div className="status-message">
           <span className="status-label"><span aria-hidden="true" />Nominations open</span>
