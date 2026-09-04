@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Montserrat } from 'next/font/google';
+import MetaPixel from '@/components/MetaPixel';
 import { getSiteUrl, siteDescription, siteName } from '@/lib/site';
 import './globals.css';
 
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <a className='skip-link' href='#main-content'>Skip to main content</a>
         {children}
+        <MetaPixel />
       </body>
     </html>
   );
