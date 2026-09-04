@@ -242,10 +242,10 @@ export default function AdminNominations() {
         <section className={styles.loginCard} aria-labelledby="admin-sign-in-title">
           <Image
             className={styles.loginLogo}
-            src="/new logo.jpg"
+            src="/BLUE LOGO.png"
             alt="API Excellence Awards 2026"
-            width={859}
-            height={859}
+            width={612}
+            height={139}
             priority
           />
           <div className={styles.lockMark} aria-hidden="true">
@@ -285,10 +285,10 @@ export default function AdminNominations() {
         <Link href="/" aria-label="API Excellence Awards nomination page">
           <Image
             className={styles.headerLogo}
-            src="/new logo.jpg"
+            src="/BLUE LOGO.png"
             alt="API Excellence Awards 2026"
-            width={859}
-            height={859}
+            width={612}
+            height={139}
             priority
           />
         </Link>

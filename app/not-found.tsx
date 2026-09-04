@@ -7,10 +7,10 @@ export default function NotFound() {
       <div className='not-found-card'>
         <Image
           className='not-found-logo'
-          src='/new logo.jpg'
+          src='/BLUE LOGO.png'
           alt='API Excellence Awards 2026'
-          width={859}
-          height={859}
+          width={612}
+          height={139}
           priority
         />
         <p className='not-found-code'>Page not found</p>

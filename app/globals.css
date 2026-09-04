@@ -180,9 +180,8 @@ textarea:focus-visible {
 .brand-logo {
   display: block;
   width: auto;
-  height: 72px;
+  height: 56px;
   object-fit: contain;
-  border-radius: 4px;
 }
 
 .header-actions {
@@ -1004,33 +1003,6 @@ textarea:focus-visible {
 .privacy-note svg {
   flex: 0 0 auto;
   color: var(--gold);
-}
-
-.support-note {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  padding-top: 14px;
-  color: rgba(255, 255, 255, 0.53);
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-.support-note svg {
-  flex: 0 0 auto;
-  color: var(--gold);
-}
-
-.support-note a {
-  color: var(--white);
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  white-space: nowrap;
-}
-
-.support-note a:hover {
-  color: var(--gold-light);
 }
 
 .nomination-form {
@@ -2233,27 +2205,17 @@ footer {
 
 .footer-logo-mark {
   display: block;
-  width: 74px;
-  height: 74px;
+  width: 210px;
+  height: 48px;
   flex: 0 0 auto;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 6px;
 }
 
 .footer-logo-source {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-}
-
-.footer-contacts {
-  display: flex;
-  gap: clamp(28px, 5vw, 64px);
-  align-items: flex-start;
-  justify-content: flex-end;
-  flex-wrap: wrap;
+  object-fit: contain;
 }
 
 .footer-contact {
@@ -2309,10 +2271,9 @@ footer {
 }
 
 .not-found-logo {
-  width: min(100%, 180px);
+  width: min(100%, 310px);
   height: auto;
   margin-bottom: 32px;
-  border-radius: 6px;
 }
 
 .not-found-code {
@@ -2504,9 +2465,15 @@ footer {
 }
 
 @media (max-width: 600px) {
-  .footer-contacts {
-    justify-content: flex-start;
-    gap: 22px;
+  .footer-brand {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .footer-logo-mark {
+    width: 200px;
+    height: 45px;
   }
 
   .footer-contact {
@@ -2573,7 +2540,7 @@ footer {
 
   .brand-logo {
     width: auto;
-    height: 50px;
+    height: 38px;
   }
 
   .button-small {

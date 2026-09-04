@@ -15,7 +15,7 @@ import {
 import NominationCountdown from "@/components/NominationCountdown";
 import NominationForm from "@/components/NominationForm";
 import { categories } from "@/lib/categories";
-import { awardCeremony, awardDates, websiteSupport } from "@/lib/awardContent";
+import { awardCeremony, awardDates } from "@/lib/awardContent";
 
 const principles = [
   {
@@ -58,10 +58,10 @@ export default function Home() {
         <a className="brand" href="#top" aria-label="API Excellence Awards home">
           <Image
             className="brand-logo"
-            src="/new logo.jpg"
+            src="/BLUE LOGO.png"
             alt="API Excellence Awards 2026"
-            width={859}
-            height={859}
+            width={612}
+            height={139}
             priority
           />
         </a>
@@ -271,10 +271,10 @@ export default function Home() {
             <span className="footer-logo-mark" aria-hidden="true">
               <Image
                 className="footer-logo-source"
-                src="/new logo.jpg"
+                src="/WHITE LOGO.png"
                 alt=""
-                width={859}
-                height={859}
+                width={612}
+                height={139}
               />
             </span>
             <div>
@@ -282,17 +282,11 @@ export default function Home() {
               <p>Advancing publishing through advocacy, collaboration, and excellence.</p>
             </div>
           </div>
-          <div className="footer-contacts">
-            <div className="footer-contact">
-              <span>Nomination enquiries</span>
-              <a href="mailto:associationofpublishers@gmail.com">
-                associationofpublishers@gmail.com
-              </a>
-            </div>
-            <div className="footer-contact">
-              <span>Website support</span>
-              <a href={`tel:${websiteSupport.phone}`}>{websiteSupport.phoneDisplay}</a>
-            </div>
+          <div className="footer-contact">
+            <span>Nomination enquiries</span>
+            <a href="mailto:associationofpublishers@gmail.com">
+              associationofpublishers@gmail.com
+            </a>
           </div>
         </div>
         <div className="footer-bottom">

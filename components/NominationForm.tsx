@@ -12,13 +12,12 @@ import {
   FileText,
   Inbox,
   LockKeyhole,
-  PhoneCall,
   Send,
   Upload,
   X,
 } from 'lucide-react';
 import AwardTerms from '@/components/AwardTerms';
-import { awardDates, websiteSupport } from '@/lib/awardContent';
+import { awardDates } from '@/lib/awardContent';
 import { categories, type CategoryId } from '@/lib/categories';
 import {
   defaultPhoneCountry,
@@ -537,13 +536,6 @@ export default function NominationForm() {
           <div className='privacy-note'>
             <LockKeyhole size={17} />
             <span>Your entry and any supporting file are private to authorised reviewers.</span>
-          </div>
-          <div className='support-note'>
-            <PhoneCall size={16} />
-            <span>
-              Trouble with this form? Call{' '}
-              <a href={`tel:${websiteSupport.phone}`}>{websiteSupport.phoneDisplay}</a>.
-            </span>
           </div>
         </aside>
 

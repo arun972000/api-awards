@@ -3,18 +3,32 @@ import { join } from 'node:path';
 import { ImageResponse } from 'next/og';
 import { awardDates } from '@/lib/awardContent';
 
-let logoDataUrlPromise: Promise<string> | undefined;
+const logoWidth = 612;
+const logoHeight = 139;
+let blueLogoDataUrlPromise: Promise<string> | undefined;
+let whiteLogoDataUrlPromise: Promise<string> | undefined;
 
-export function getAwardLogoDataUrl() {
-  logoDataUrlPromise ??= readFile(
-    join(process.cwd(), 'public', 'new logo.jpg'),
-  ).then((contents) => 'data:image/jpeg;base64,' + contents.toString('base64'));
+export function getBlueAwardLogoDataUrl() {
+  blueLogoDataUrlPromise ??= readFile(
+    join(process.cwd(), 'public', 'BLUE LOGO.png'),
+  ).then((contents) => 'data:image/png;base64,' + contents.toString('base64'));
 
-  return logoDataUrlPromise;
+  return blueLogoDataUrlPromise;
+}
+
+export function getWhiteAwardLogoDataUrl() {
+  whiteLogoDataUrlPromise ??= readFile(
+    join(process.cwd(), 'public', 'WHITE LOGO.png'),
+  ).then((contents) => 'data:image/png;base64,' + contents.toString('base64'));
+
+  return whiteLogoDataUrlPromise;
 }
 
 export async function createBrandIcon(pixelSize: number) {
-  const logoDataUrl = await getAwardLogoDataUrl();
+  const logoDataUrl = await getBlueAwardLogoDataUrl();
+  const tileSize = Math.round(pixelSize * 0.84);
+  const markSize = Math.round(pixelSize * 0.7);
+  const scaledLogoWidth = Math.round(markSize * (logoWidth / logoHeight));
 
   return new ImageResponse(
     (
@@ -23,22 +37,46 @@ export async function createBrandIcon(pixelSize: number) {
           width: '100%',
           height: '100%',
           display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           background: '#173b5e',
         }}
       >
-        {/* ImageResponse requires a native image element for embedded data URLs. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={logoDataUrl}
-          alt=''
-          width={pixelSize}
-          height={pixelSize}
+        <div
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
+            width: tileSize,
+            height: tileSize,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden',
+            background: '#ffffff',
+            borderRadius: Math.round(pixelSize * 0.17),
           }}
-        />
+        >
+          <div
+            style={{
+              width: markSize,
+              height: markSize,
+              display: 'flex',
+              overflow: 'hidden',
+            }}
+          >
+            {/* ImageResponse requires a native image element for embedded data URLs. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logoDataUrl}
+              alt=''
+              width={scaledLogoWidth}
+              height={markSize}
+              style={{
+                width: scaledLogoWidth,
+                height: markSize,
+                objectFit: 'fill',
+              }}
+            />
+          </div>
+        </div>
       </div>
     ),
     { width: pixelSize, height: pixelSize },
@@ -46,7 +84,7 @@ export async function createBrandIcon(pixelSize: number) {
 }
 
 export async function createSocialImage() {
-  const logoDataUrl = await getAwardLogoDataUrl();
+  const logoDataUrl = await getWhiteAwardLogoDataUrl();
 
   return new ImageResponse(
     (
@@ -62,28 +100,24 @@ export async function createSocialImage() {
           fontFamily: 'Arial, sans-serif',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 30 }}>
-          {/* ImageResponse requires a native image element for embedded data URLs. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={logoDataUrl}
-            alt=''
-            width={168}
-            height={168}
-            style={{ width: 168, height: 168, objectFit: 'cover', borderRadius: 7 }}
-          />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <span style={{ color: '#b7c0c7', fontSize: 20, letterSpacing: 3 }}>
-              FOUNDERS EDITION
-            </span>
-            <strong style={{ fontSize: 34 }}>API Excellence Awards 2026</strong>
-          </div>
-        </div>
+        {/* ImageResponse requires a native image element for embedded data URLs. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={logoDataUrl}
+          alt=''
+          width={490}
+          height={111}
+          style={{ width: 490, height: 111, objectFit: 'contain' }}
+        />
+
+        <span style={{ marginTop: 22, color: '#b7c0c7', fontSize: 20, letterSpacing: 3 }}>
+          FOUNDERS EDITION · 2026
+        </span>
 
         <div
           style={{
             maxWidth: 1000,
-            marginTop: 34,
+            marginTop: 28,
             fontSize: 58,
             fontWeight: 700,
             letterSpacing: -2,
