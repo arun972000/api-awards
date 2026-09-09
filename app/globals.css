@@ -549,6 +549,74 @@ textarea:focus-visible {
   border: 0;
 }
 
+/* Recognition band directly beneath the hero. It keeps the hero's darkest tone
+   so the two supplied reverse marks sit on the dark ground they were drawn for,
+   and so the eye reads the band as the foot of the hero rather than a new
+   section competing with the nomination call to action. */
+.associates {
+  padding-block: 54px 58px;
+  color: var(--white);
+  background: var(--brand-blue-deep);
+}
+
+.associates-title {
+  margin: 0 0 34px;
+  text-align: center;
+}
+
+.associates-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Held well inside the 1320px shell: at full width the two marks drift so far
+     apart they stop reading as one group. */
+  max-width: 880px;
+  margin-inline: auto;
+  padding: 0;
+  list-style: none;
+}
+
+.associate {
+  display: grid;
+  justify-items: center;
+  padding-inline: clamp(16px, 4vw, 64px);
+  text-align: center;
+}
+
+.associate + .associate {
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* Fixed box so both marks share a baseline despite their different
+   proportions; each image sets its own height inline. */
+.associate-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 58px;
+  opacity: 0.92;
+  transition: opacity 150ms ease;
+}
+
+.associate-mark:hover,
+.associate-mark:focus-visible {
+  opacity: 1;
+}
+
+.associate-name {
+  margin: 18px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.associate-note {
+  max-width: 34ch;
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .section-shell {
   width: min(100% - 48px, 1320px);
   margin-inline: auto;
@@ -2327,6 +2395,21 @@ footer {
 }
 
 @media (max-width: 860px) {
+  .associates {
+    padding-block: 44px 48px;
+  }
+
+  .associates-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .associate + .associate {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    border-left: 0;
+  }
+
   .site-header {
     min-height: 80px;
   }

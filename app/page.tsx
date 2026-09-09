@@ -16,7 +16,7 @@ import NominationCountdown from "@/components/NominationCountdown";
 import NominationForm from "@/components/NominationForm";
 import AwardStructuredData from "@/components/AwardStructuredData";
 import { categories } from "@/lib/categories";
-import { awardCeremony, awardDates } from "@/lib/awardContent";
+import { associatedOrganisations, awardCeremony, awardDates } from "@/lib/awardContent";
 
 const principles = [
   {
@@ -127,6 +127,36 @@ export default function Home() {
           <span>
             <Award size={16} /> Five founding categories
           </span>
+        </div>
+      </section>
+
+      <section className="associates" aria-labelledby="associates-title">
+        <div className="section-shell">
+          <h2 className="eyebrow light associates-title" id="associates-title">
+            In association with
+          </h2>
+          <ul className="associates-list">
+            {associatedOrganisations.map((organisation) => (
+              <li className="associate" key={organisation.name}>
+                <a
+                  className="associate-mark"
+                  href={organisation.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Image
+                    src={organisation.logo}
+                    alt={organisation.name}
+                    width={organisation.width}
+                    height={organisation.height}
+                    style={{ height: organisation.displayHeight, width: "auto" }}
+                  />
+                </a>
+                <p className="associate-name">{organisation.name}</p>
+                <p className="associate-note">{organisation.note}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

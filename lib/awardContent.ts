@@ -26,6 +26,35 @@ export const awardCeremony = {
 
 export const awardsContactEmail = "associationofpublishers@gmail.com";
 
+// Organisations standing behind the Founders Edition. API asked that the page
+// avoid the words "partner" and "sponsor", so the heading reads "In association
+// with" - it conveys standing without naming a commercial arrangement.
+// Names are taken verbatim from each company's own site footer.
+export const associatedOrganisations = [
+  {
+    name: "Integra Software Services Pvt. Ltd.",
+    note: "Content and technology solutions for academic, educational and professional publishing.",
+    href: "https://www.integra.co.in",
+    logo: "/logos/integra.png",
+    // Intrinsic size of the supplied reverse mark, for aspect ratio only.
+    width: 760,
+    height: 270,
+    // Rendered height, tuned per mark: the Integra wordmark carries dots and a
+    // descender inside its box, so it needs more height than DCB's plain caps
+    // to read at the same optical weight.
+    displayHeight: 46,
+  },
+  {
+    name: "DCB Bank Limited",
+    note: "A scheduled commercial bank regulated by the Reserve Bank of India.",
+    href: "https://www.dcb.bank.in",
+    logo: "/logos/dcb-bank.png",
+    width: 760,
+    height: 111,
+    displayHeight: 25,
+  },
+] as const;
+
 export const awardTerms = [
   {
     title: "Eligibility",
