@@ -16,7 +16,7 @@ import NominationCountdown from "@/components/NominationCountdown";
 import NominationForm from "@/components/NominationForm";
 import AwardStructuredData from "@/components/AwardStructuredData";
 import { categories } from "@/lib/categories";
-import { associatedOrganisations, awardCeremony, awardDates } from "@/lib/awardContent";
+import { awardCeremony, awardDates, supportingPartners } from "@/lib/awardContent";
 
 const principles = [
   {
@@ -133,27 +133,28 @@ export default function Home() {
       <section className="associates" aria-labelledby="associates-title">
         <div className="section-shell">
           <h2 className="eyebrow light associates-title" id="associates-title">
-            In association with
+            Supporting partners
           </h2>
           <ul className="associates-list">
-            {associatedOrganisations.map((organisation) => (
-              <li className="associate" key={organisation.name}>
+            {supportingPartners.map((partner) => (
+              <li className="associate" key={partner.name}>
+                <p className="associate-role">{partner.role}</p>
                 <a
                   className="associate-mark"
-                  href={organisation.href}
+                  href={partner.href}
                   target="_blank"
                   rel="noreferrer"
                 >
                   <Image
-                    src={organisation.logo}
-                    alt={organisation.name}
-                    width={organisation.width}
-                    height={organisation.height}
-                    style={{ height: organisation.displayHeight, width: "auto" }}
+                    src={partner.logo}
+                    alt={partner.name}
+                    width={partner.width}
+                    height={partner.height}
+                    style={{ height: partner.displayHeight, width: "auto" }}
                   />
                 </a>
-                <p className="associate-name">{organisation.name}</p>
-                <p className="associate-note">{organisation.note}</p>
+                <p className="associate-name">{partner.name}</p>
+                <p className="associate-note">{partner.note}</p>
               </li>
             ))}
           </ul>

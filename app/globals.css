@@ -577,6 +577,9 @@ textarea:focus-visible {
 
 .associate {
   display: grid;
+  /* Pin rows to the top: otherwise the column with the shorter note stretches
+     to its neighbour's height and its role, mark and name drift out of line. */
+  align-content: start;
   justify-items: center;
   padding-inline: clamp(16px, 4vw, 64px);
   text-align: center;
@@ -584,6 +587,22 @@ textarea:focus-visible {
 
 .associate + .associate {
   border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* Each partner's role, as a small outlined tag above its mark. It borrows the
+   status label's type and the buttons' 2px corners so it belongs to the site,
+   and the outline keeps it distinct from the section heading above it. */
+.associate-role {
+  margin: 0 0 22px;
+  padding: 6px 11px 5px;
+  color: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 /* Fixed box so both marks share a baseline despite their different
