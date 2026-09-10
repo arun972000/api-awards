@@ -1,22 +1,27 @@
 import Image from "next/image";
 import {
   ArrowDown,
+  ArrowRight,
+  ArrowUp,
   ArrowUpRight,
   Award,
   BadgeCheck,
   BookOpen,
+  CalendarClock,
   CalendarDays,
-  Check,
   Clock,
   MapPin,
   Scale,
   ShieldCheck,
 } from "lucide-react";
-import NominationCountdown from "@/components/NominationCountdown";
-import NominationForm from "@/components/NominationForm";
 import AwardStructuredData from "@/components/AwardStructuredData";
 import { categories } from "@/lib/categories";
-import { awardCeremony, awardDates, supportingPartners } from "@/lib/awardContent";
+import {
+  awardCeremony,
+  awardDates,
+  awardsContactEmail,
+  supportingPartners,
+} from "@/lib/awardContent";
 
 const principles = [
   {
@@ -40,18 +45,18 @@ export default function Home() {
   return (
     <main id="main-content">
       <AwardStructuredData />
-      <aside className="nomination-status" aria-label="Nomination status">
+      <aside className="nomination-status is-closed" aria-label="Nomination status">
         <div className="status-message">
-          <span className="status-label"><span aria-hidden="true" />Nominations open</span>
+          <span className="status-label"><span aria-hidden="true" />Nominations closed</span>
           <p>
-            Open to individuals, organisations and teams across the Indian publishing
-            ecosystem.
+            Thank you to everyone who put forward a nomination. The independent Jury is now
+            reviewing every eligible entry.
           </p>
         </div>
         <p className="status-closing">
-          <span>Nominations close</span>
+          <span>Winners announced</span>
           <strong>
-            {awardDates.nominationsClose}, {awardDates.nominationsCloseTime}
+            {awardDates.ceremony}, {awardCeremony.city}
           </strong>
         </p>
       </aside>
@@ -70,10 +75,10 @@ export default function Home() {
         <div className="header-actions">
           <a
             className="button button-small"
-            href="#nominate"
-            aria-label="Nominate now for the API Excellence Awards 2026"
+            href="#ceremony"
+            aria-label="Awards ceremony details"
           >
-            Nominate now <ArrowDown size={15} />
+            Ceremony details <ArrowDown size={15} />
           </a>
         </div>
       </header>
@@ -88,18 +93,29 @@ export default function Home() {
             <em>beyond the bestseller.</em>
           </h1>
           <p className="hero-intro">
-            Know an organisation, initiative or individual advancing Indian publishing? Put them
-            forward for the API Excellence Awards 2026.
+            Nominations are now closed. Thank you to everyone who put forward an organisation,
+            initiative or individual advancing Indian publishing.
           </p>
           <div className="hero-actions">
-            <a className="button button-light" href="#nominate">
-              Nominate now <ArrowUpRight size={17} />
+            <a className="button button-light" href="#ceremony">
+              Ceremony details <ArrowDown size={17} />
             </a>
             <a className="text-link light-link" href="#categories">
               Explore the five awards <ArrowDown size={15} />
             </a>
           </div>
-          <NominationCountdown />
+          {/* Rendered on the server rather than by the live countdown, which paints
+              its counting state until the browser takes over. */}
+          <div className="countdown is-closed">
+            <p className="countdown-label">
+              <CalendarClock size={15} aria-hidden="true" />
+              Nominations have closed
+            </p>
+            <p className="countdown-deadline">
+              Nominations closed at <strong>{awardDates.nominationsCloseLong}</strong>. Winners
+              will be announced on <strong>{awardDates.ceremony}</strong>.
+            </p>
+          </div>
         </div>
         <div className="hero-art" aria-hidden="true">
           <div className="laurel laurel-left">
@@ -185,12 +201,12 @@ export default function Home() {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Founders Edition · Year One</p>
-              <h2>Choose the right award category</h2>
+              <h2>The five Founders Edition awards</h2>
             </div>
             <p>
-              Choose the category that most closely reflects the nominee&apos;s primary contribution.
-              If the same nominee is entered in more than one category, submit a separate form for
-              each category.
+              Each category recognises a distinct contribution to Indian publishing. The Jury will
+              select up to three finalists in each, and the winners will be announced at the
+              ceremony.
             </p>
           </div>
           <div className="category-grid">
@@ -199,9 +215,6 @@ export default function Home() {
                 <span className="category-number">{category.number}</span>
                 <h3>{category.name}</h3>
                 <p>{category.description}</p>
-                <a href="#nominate">
-                  Nominate in this category <ArrowDown size={15} />
-                </a>
               </article>
             ))}
           </div>
@@ -273,30 +286,54 @@ export default function Home() {
       <section className="before-you-start">
         <div className="section-shell preparation-grid">
           <div>
-            <p className="eyebrow light">Before you begin</p>
-            <h2>What you&apos;ll need to nominate</h2>
+            <p className="eyebrow light">What happens next</p>
+            <h2>From nominations to the awards evening</h2>
             <p className="preparation-deadline">
-              Nominations close at <strong>{awardDates.nominationsCloseLong}</strong>.
+              Nominations closed at <strong>{awardDates.nominationsCloseLong}</strong>.
             </p>
           </div>
           <ul>
             <li>
-              <Check size={17} /> Nominee details and one contact person
+              <ArrowRight size={17} /> The independent Jury reviews every eligible nomination
             </li>
             <li>
-              <Check size={17} /> A brief description of up to 300 words
+              <ArrowRight size={17} /> Finalists may be asked for clarification or supporting
+              evidence
             </li>
             <li>
-              <Check size={17} /> Impact and recognition statements of up to 150 words each
+              <ArrowRight size={17} /> Up to three finalists are selected in each category
             </li>
             <li>
-              <Check size={17} /> One optional URL or supporting file, up to 4 MB
+              <ArrowRight size={17} /> Winners are announced at the ceremony on{" "}
+              {awardDates.ceremony}
             </li>
           </ul>
         </div>
       </section>
 
-      <NominationForm />
+      {/* Kept on #nominate so links shared during the campaign still land here. */}
+      <section className="nomination-section" id="nominate">
+        <div className="success-card closed-notice">
+          <div className="success-icon">
+            <Award size={34} />
+          </div>
+          <p className="eyebrow">Nominations closed</p>
+          <h2>Thank you for your nominations.</h2>
+          <p>
+            Nominations for the API Excellence Awards 2026 closed at{" "}
+            <strong>{awardDates.nominationsCloseLong}</strong>, and no further entries can be
+            accepted.
+          </p>
+          <p>
+            If you submitted a nomination, your confirmation email carries its submission
+            reference. For any questions, write to{" "}
+            <a href={`mailto:${awardsContactEmail}`}>{awardsContactEmail}</a>.
+          </p>
+          <a className="button button-dark" href="#ceremony">
+            Ceremony details <ArrowUp size={15} />
+          </a>
+        </div>
+      </section>
 
       <footer>
         <div className="footer-top">
@@ -316,7 +353,7 @@ export default function Home() {
             </div>
           </div>
           <div className="footer-contact">
-            <span>Nomination enquiries</span>
+            <span>Awards enquiries</span>
             <a href="mailto:associationofpublishers@gmail.com">
               associationofpublishers@gmail.com
             </a>

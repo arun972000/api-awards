@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { awardDates, nominationsAreOpen } from '@/lib/awardContent';
 import { categories } from '@/lib/categories';
 import { sendAdminNominationAlert, sendNominationConfirmation } from '@/lib/email';
 import { nominationSchema } from '@/lib/validation';
@@ -39,6 +40,19 @@ async function requestPayload(request: Request) {
 
 export async function POST(request: Request) {
   let uploadedPath: string | null = null;
+
+  // Checked before the body is read, so a late upload is never parsed or stored.
+  if (!nominationsAreOpen()) {
+    return NextResponse.json(
+      {
+        error:
+          'Nominations closed at ' +
+          awardDates.nominationsCloseLong +
+          ' and no further entries can be accepted.',
+      },
+      { status: 403 },
+    );
+  }
 
   try {
     const contentLength = Number(request.headers.get('content-length') ?? 0);

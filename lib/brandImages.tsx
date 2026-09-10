@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { ImageResponse } from 'next/og';
-import { awardDates } from '@/lib/awardContent';
+import { awardCeremony, awardDates } from '@/lib/awardContent';
 
 const logoWidth = 612;
 const logoHeight = 139;
@@ -124,7 +124,7 @@ export async function createSocialImage() {
             lineHeight: 1.08,
           }}
         >
-          Nominate the people and work advancing Indian publishing.
+          Celebrating the people and work advancing Indian publishing.
         </div>
 
         <div
@@ -140,11 +140,11 @@ export async function createSocialImage() {
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <span style={{ color: '#aeb7bf', fontSize: 18, letterSpacing: 2 }}>
-              NOMINATIONS CLOSE
+              WINNERS ANNOUNCED
             </span>
-            <strong style={{ fontSize: 30 }}>{awardDates.nominationsClose}</strong>
+            <strong style={{ fontSize: 30 }}>{awardDates.ceremony}</strong>
             <span style={{ color: '#aeb7bf', fontSize: 18 }}>
-              {awardDates.nominationsCloseTime}
+              {awardCeremony.building}, {awardCeremony.city}
             </span>
           </div>
           <div
@@ -158,7 +158,7 @@ export async function createSocialImage() {
               letterSpacing: 2,
             }}
           >
-            NOMINATE NOW
+            NOMINATIONS CLOSED
           </div>
         </div>
       </div>

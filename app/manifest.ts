@@ -3,7 +3,7 @@ import { siteDescription, siteName } from '@/lib/site';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: siteName + ' Nominations',
+    name: siteName,
     short_name: 'API Awards 2026',
     description: siteDescription,
     id: '/',
@@ -31,10 +31,10 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       {
-        name: 'Nominate now',
-        short_name: 'Nominate',
-        description: 'Start an API Excellence Awards 2026 nomination.',
-        url: '/#nominate',
+        name: 'Awards ceremony',
+        short_name: 'Ceremony',
+        description: 'Date, time and venue of the API Excellence Awards 2026 ceremony.',
+        url: '/#ceremony',
       },
     ],
   };

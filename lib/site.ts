@@ -1,13 +1,13 @@
-import { awardDates } from '@/lib/awardContent';
+import { awardCeremony, awardDates } from '@/lib/awardContent';
 
 const productionSiteUrl = 'https://apiexcellenceawards.co.in';
 const developmentSiteUrl = 'http://localhost:3000';
 
 export const siteName = 'API Excellence Awards 2026';
-// Read from awardDates so the description cannot drift from the deadline.
+// Read from awardDates so the description cannot drift from the dates.
 export const siteDescription =
-  'Nominate an organisation, initiative or individual advancing Indian publishing. ' +
-  `Nominations close at ${awardDates.nominationsCloseLong}.`;
+  `Nominations closed at ${awardDates.nominationsCloseLong}. ` +
+  `Winners will be announced on ${awardDates.ceremony} in ${awardCeremony.city}.`;
 
 export function getSiteUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();

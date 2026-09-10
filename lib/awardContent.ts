@@ -10,6 +10,13 @@ export const awardDates = {
   ceremony: "25 September 2026",
 } as const;
 
+// Whether nominations are still being accepted. The submission route checks it
+// on every request, so a page left open in a browser tab cannot submit once
+// the deadline has passed.
+export function nominationsAreOpen(now = Date.now()) {
+  return now < Date.parse(awardDates.nominationsCloseIso);
+}
+
 // The ceremony where the five winners are announced. Held apart from
 // awardDates so the address can also feed structured data.
 export const awardCeremony = {

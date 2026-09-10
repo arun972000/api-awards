@@ -17,7 +17,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Nominate | API Excellence Awards 2026',
+    default: 'Nominations closed | API Excellence Awards 2026',
     template: '%s | API Excellence Awards 2026',
   },
   description: siteDescription,
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-icon', type: 'image/png', sizes: '180x180' }],
   },
   openGraph: {
-    title: 'Nominations open | API Excellence Awards 2026',
+    title: 'Nominations closed | API Excellence Awards 2026',
     description: siteDescription,
     url: '/',
     siteName,
@@ -63,21 +63,21 @@ export const metadata: Metadata = {
         url: '/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'API Excellence Awards 2026 nominations',
+        alt: 'API Excellence Awards 2026',
         type: 'image/png',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Nominations open | API Excellence Awards 2026',
+    title: 'Nominations closed | API Excellence Awards 2026',
     description: siteDescription,
     images: [
       {
         url: '/twitter-image',
         width: 1200,
         height: 630,
-        alt: 'API Excellence Awards 2026 nominations',
+        alt: 'API Excellence Awards 2026',
       },
     ],
   },
